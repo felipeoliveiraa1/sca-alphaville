@@ -16,7 +16,7 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
       fetchpriority="high"
       quality={82}
     />
-    <video class="hero__video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
+    <video class="hero__video" autoplay muted loop playsinline preload="none" aria-hidden="true" tabindex="-1">
       <source data-src="/video/hero.webm" type="video/webm" />
       <source data-src="/video/hero.mp4" type="video/mp4" />
     </video>
@@ -278,15 +278,14 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
 
 <script>
   // Hero background video: enhancement only. The poster <Image> is the LCP and shows
-  // instantly; the video loads/plays solely on desktop, without reduced-motion, and
-  // when the user is not asking to save data. Mobile/reduced-motion never downloads it.
+  // instantly; the video then loads/plays on desktop AND mobile (muted + playsinline),
+  // skipped only under reduced-motion or the user's data-saver setting.
   const hero = document.querySelector<HTMLElement>('.hero');
   const video = hero?.querySelector<HTMLVideoElement>('video.hero__video');
   if (hero && video) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const big = matchMedia('(min-width: 760px)').matches;
     const saveData = (navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData;
-    if (!reduce && big && !saveData) {
+    if (!reduce && !saveData) {
       let any = false;
       video.querySelectorAll('source').forEach((s) => {
         if (s.dataset.src) { s.src = s.dataset.src; any = true; }
