@@ -62,7 +62,7 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
   .nav.is-scrolled::before { opacity: 0; }
 
   .nav__inner {
-    position: relative;
+    position: relative; z-index: 2;   /* keep logo + burger (X) above the open menu panel */
     display: flex; align-items: center; justify-content: space-between;
     gap: 2rem;
     max-width: var(--container-wide); margin-inline: auto;
@@ -92,7 +92,9 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
 
   /* Mobile menu overlay */
   .menu {
-    position: fixed; inset: 0; z-index: calc(var(--z-nav) - 1);
+    /* sits below .nav__inner (z:2) so the logo + close button stay visible/clickable,
+       yet still covers the page because the whole <header.nav> is a z:100 layer */
+    position: fixed; inset: 0; z-index: 1;
     background: var(--bg);
     display: flex; flex-direction: column; justify-content: center; gap: 2.5rem;
     padding: var(--gutter);
