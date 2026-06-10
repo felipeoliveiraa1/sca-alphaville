@@ -1,0 +1,46 @@
+---
+import { Image } from 'astro:assets';
+import formation from '../assets/images/fleet-formation-saoroque.jpg';
+---
+<section class="interlude grain" aria-label="A frota Super Carros Alphaville reunida no Circuito de São Roque">
+  <div class="interlude__media" data-parallax="0.18">
+    <Image
+      src={formation}
+      alt="Frota de supercarros do Super Carros Alphaville em formação no autódromo de São Roque"
+      class="media-cover"
+      widths={[768, 1280, 1440]}
+      sizes="100vw"
+      quality={82}
+    />
+  </div>
+  <div class="interlude__scrim" aria-hidden="true"></div>
+  <div class="interlude__frame" aria-hidden="true"></div>
+  <div class="interlude__cap container container--wide" data-reveal>
+    <span class="facet" aria-hidden="true"></span>
+    <span class="interlude__cap-text">A frota · Circuito de São Roque</span>
+  </div>
+</section>
+
+<style>
+  .interlude {
+    position: relative; width: 100%;
+    height: clamp(360px, 56vw, 720px); overflow: clip;
+  }
+  .interlude__media { position: absolute; inset: -10% 0; will-change: transform; }
+  .interlude__scrim {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(6,14,11,0.85) 0%, rgba(6,14,11,0.12) 22%,
+      rgba(6,14,11,0.20) 70%, rgba(6,14,11,0.92) 100%);
+  }
+  .interlude__frame {
+    position: absolute; inset: clamp(0.8rem, 2vw, 1.6rem); pointer-events: none;
+    border: 1px solid var(--line-gold);
+  }
+  .interlude__cap {
+    position: absolute; left: 0; right: 0; bottom: clamp(1.4rem, 3vw, 2.4rem); z-index: 3;
+    display: flex; align-items: center; gap: 0.7rem;
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text);
+  }
+  .interlude__cap .facet { color: var(--gold); }
+</style>

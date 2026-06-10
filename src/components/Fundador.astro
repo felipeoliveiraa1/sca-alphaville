@@ -1,0 +1,94 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../assets/images/founder-jose-silva.jpg';
+import { founder, social } from '../data/site';
+---
+<section class="fnd section" id="fundador">
+  <div class="container container--wide fnd__grid">
+    <figure class="fnd__media" data-reveal="left">
+      <div class="fnd__media-inner" data-parallax="0.08">
+        <Image src={portrait} alt={`${founder.name}, ${founder.role}`} class="media-cover" widths={[480, 720, 1080]} sizes="(max-width: 900px) 100vw, 42vw" quality={84} />
+      </div>
+      <div class="fnd__frame" aria-hidden="true"></div>
+      <figcaption class="fnd__cap">
+        <span class="facet" aria-hidden="true"></span>
+        <span>{founder.name} · {founder.role}</span>
+      </figcaption>
+    </figure>
+
+    <div class="fnd__text">
+      <p class="eyebrow" data-reveal="fade">{founder.eyebrow}</p>
+      <figure class="fnd__figure">
+        <blockquote class="fnd__quote" data-reveal>
+          <span class="fnd__mark" aria-hidden="true">“</span>{founder.quote}
+        </blockquote>
+        <figcaption class="sr-only">{founder.name}, {founder.role}</figcaption>
+      </figure>
+
+      <div class="hr hr--gold fnd__rule" data-reveal></div>
+
+      <div data-stagger="120">
+        {founder.body.map((p) => <p class="fnd__p">{p}</p>)}
+      </div>
+
+      <a class="fnd__podcast" href={social.youtube} target="_blank" rel="noopener" data-reveal data-hover aria-label="Podcast Super Carros Alphaville no YouTube (abre em nova aba)">
+        <span class="fnd__podcast-icon" aria-hidden="true">▶</span>
+        <span>
+          <span class="fnd__podcast-title">Podcast Super Carros Alphaville</span>
+          <span class="fnd__podcast-sub">Negócios, mercado e estilo de vida — no YouTube</span>
+        </span>
+        <span class="btn__arrow fnd__podcast-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fnd__grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+
+  .fnd__media { position: relative; aspect-ratio: 4 / 5; overflow: clip; margin: 0; }
+  .fnd__media-inner { position: absolute; inset: -8% 0; will-change: transform; }
+  .fnd__media .media-cover { object-position: center 25%; }
+  .fnd__frame { position: absolute; inset: 0; border: 1px solid var(--line-gold); pointer-events: none; }
+  .fnd__frame::before, .fnd__frame::after {
+    content: ''; position: absolute; width: 28px; height: 28px; border: 1px solid var(--gold);
+  }
+  .fnd__frame::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+  .fnd__frame::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+  .fnd__cap {
+    position: absolute; left: 1.2rem; bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text);
+    background: rgba(6,14,11,0.5); backdrop-filter: blur(6px); padding: 0.6rem 0.9rem;
+  }
+  .fnd__cap .facet { color: var(--gold); }
+
+  .fnd__figure { margin: 0; }
+  .fnd__quote {
+    font-family: var(--font-serif); font-size: clamp(1.6rem, 3.2vw, 2.8rem); line-height: 1.22;
+    color: var(--text-strong); margin: 1.8rem 0 0; position: relative; max-width: 22ch; font-weight: 400;
+  }
+  .fnd__mark { color: var(--gold); font-size: 1.9em; line-height: 0; vertical-align: -0.5em; margin-right: 0.04em; }
+  .fnd__rule { margin: 2.2rem 0; max-width: 7rem; }
+  .fnd__p { color: var(--text-muted); line-height: 1.6; }
+  .fnd__p + .fnd__p { margin-top: 1.2rem; }
+
+  .fnd__podcast {
+    display: flex; align-items: center; gap: 1.1rem; margin-top: 2.4rem;
+    padding: 1.1rem 1.3rem; border: 1px solid var(--line); max-width: 30rem;
+    transition: border-color var(--dur-fast), background var(--dur-fast);
+  }
+  .fnd__podcast:hover { border-color: var(--line-gold); background: var(--tint-gold); }
+  .fnd__podcast-icon {
+    flex: none; width: 38px; height: 38px; display: grid; place-items: center;
+    border: 1px solid var(--gold); color: var(--gold); font-size: 0.7rem;
+  }
+  .fnd__podcast-title { display: block; font-weight: 500; color: var(--text-strong); font-size: 0.95rem; }
+  .fnd__podcast-sub { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
+  .fnd__podcast-arrow { margin-left: auto; color: var(--gold); transition: transform var(--dur-mid) var(--ease-expo); }
+  .fnd__podcast:hover .fnd__podcast-arrow { transform: translateX(0.35em); }
+
+  @media (max-width: 900px) {
+    .fnd__grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .fnd__media { aspect-ratio: 4 / 4; max-height: 70vh; }
+  }
+</style>

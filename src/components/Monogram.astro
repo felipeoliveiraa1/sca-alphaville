@@ -1,0 +1,25 @@
+---
+/* SCA faceted-diamond emblem. Stroke uses currentColor. */
+interface Props { class?: string; }
+const { class: klass = '' } = Astro.props;
+---
+<svg class={klass} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none"
+     stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+     role="img" aria-label="SCA">
+  <!-- crown -->
+  <path d="M34 18 H66" />
+  <path d="M34 18 L16 40" />
+  <path d="M66 18 L84 40" />
+  <!-- girdle -->
+  <path d="M16 40 H84" />
+  <!-- pavilion -->
+  <path d="M16 40 L50 88" />
+  <path d="M84 40 L50 88" />
+  <!-- internal facets -->
+  <path d="M34 18 V40" opacity="0.55" />
+  <path d="M66 18 V40" opacity="0.55" />
+  <path d="M34 40 L50 88" opacity="0.55" />
+  <path d="M66 40 L50 88" opacity="0.55" />
+  <path d="M50 40 V88" opacity="0.35" />
+  <path d="M34 18 L50 40 L66 18" opacity="0.35" />
+</svg>

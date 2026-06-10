@@ -1,0 +1,198 @@
+---
+import '../styles/tokens.css';
+import '../styles/fonts.css';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Monogram from '../components/Monogram.astro';
+import Wordmark from '../components/Wordmark.astro';
+import { brand } from '../data/site';
+import { WORDMARK_PATH, WORDMARK_VIEWBOX } from '../lib/wordmark';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = `${brand.name} — ${brand.positioning}`,
+  description = 'Super Carros Alphaville: o ecossistema privado que une a paixão por supercarros ao networking de alto nível. Mais de 2.000 membros, 140+ edições, presença em 12 estados, EUA e Europa.',
+} = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <noscript><style>.preloader{display:none!important}body.is-loading{overflow:auto!important;height:auto!important}[data-reveal],.line-mask>span{opacity:1!important;transform:none!important}</style></noscript>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#060e0b" />
+    <meta name="robots" content="index, follow" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={brand.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/og.jpg" />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="/og.jpg" />
+
+    <!-- Font preloads -->
+    <link rel="preload" href="/fonts/clash-display-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/clash-display-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/zodiak-400.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: brand.legalName,
+      alternateName: brand.name,
+      url: 'https://supercarrosalphaville.com.br',
+      slogan: brand.tagline,
+      foundingDate: '2022-09-22',
+      address: { '@type': 'PostalAddress', addressLocality: 'Barueri', addressRegion: 'SP', addressCountry: 'BR' },
+      sameAs: [
+        'https://www.instagram.com/supercarrosalphaville/',
+        'https://www.youtube.com/@supercarrosalphaville',
+        'https://www.facebook.com/supercarrosalphaville1/',
+      ],
+    })} />
+  </head>
+  <body class="is-loading">
+    <!-- Shared wordmark symbol (referenced via <use> in Nav + Footer) -->
+    <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+      <symbol id="sca-wordmark" viewBox={WORDMARK_VIEWBOX}><path d={WORDMARK_PATH} fill="currentColor" /></symbol>
+    </svg>
+
+    <!-- Branded preloader curtain -->
+    <div class="preloader" data-preloader aria-hidden="true">
+      <div class="preloader__mark">
+        <Monogram class="preloader__diamond" />
+        <Wordmark class="preloader__logo" title="Super Carros Alphaville" />
+        <span class="preloader__tagline">Experiência Além da Velocidade</span>
+        <span class="preloader__bar" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="scroll-progress" data-progress aria-hidden="true"></div>
+
+    <Nav />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import { initMotion } from '../lib/motion';
+      initMotion();
+    </script>
+
+    <!-- Failsafe: if the motion bundle never boots, never leave content hidden -->
+    <script is:inline>
+      setTimeout(function () {
+        if (!window.__scaMotion) {
+          document.documentElement.classList.add('reveal-all');
+          document.body.classList.remove('is-loading');
+          var p = document.querySelector('[data-preloader]');
+          if (p) p.style.display = 'none';
+        }
+      }, 4000);
+    </script>
+
+    <style is:global>
+      /* ---- Preloader ---- */
+      body.is-loading { overflow: hidden; height: 100vh; }
+      .preloader {
+        position: fixed; inset: 0; z-index: var(--z-preloader);
+        display: grid; place-items: center;
+        background: #000;                 /* opens on pure black, like a film */
+        transition: opacity 1.3s var(--ease-expo), visibility 1.3s;
+      }
+      /* soft emerald vignette that breathes in over the black */
+      .preloader::after {
+        content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0;
+        background:
+          radial-gradient(115% 80% at 50% 50%, rgba(43,124,94,0.10), transparent 60%),
+          radial-gradient(150% 130% at 50% 50%, transparent 48%, rgba(0,0,0,0.70));
+      }
+      .preloader.is-active::after { animation: pl-vignette 2.4s var(--ease-expo) forwards; }
+      .preloader.is-done { opacity: 0; visibility: hidden; }
+      /* gentle camera-pull as the curtain lifts */
+      .preloader.is-done .preloader__mark {
+        opacity: 0; transform: translateY(-10px) scale(0.99);
+        transition: opacity 1s ease, transform 1.3s var(--ease-expo);
+      }
+      .preloader__mark {
+        position: relative;
+        display: grid; justify-items: center; gap: 1.7rem; padding-inline: 2rem; text-align: center;
+      }
+      /* everything starts invisible on black, then materialises softly (no bounce) */
+      .preloader__diamond {
+        width: clamp(32px, 6.5vw, 44px); height: auto; color: var(--gold);
+        opacity: 0; transform: scale(0.9);
+      }
+      .preloader__logo {
+        width: clamp(210px, 56vw, 470px); height: auto; color: var(--text-strong);
+        opacity: 0; transform: scale(1.05); filter: blur(10px);
+      }
+      .preloader__tagline {
+        font-family: var(--font-sans); font-size: 0.66rem; letter-spacing: 0.46em;
+        text-transform: uppercase; color: var(--text-muted); opacity: 0;
+      }
+      .preloader__bar {
+        width: 0; height: 1px; background: var(--gold-grad); margin-top: 0.4rem; opacity: 0;
+      }
+      /* a beat of black first (delays), then each element fades up — slow & smooth */
+      .preloader.is-active .preloader__diamond { animation: pl-soft 1.7s var(--ease-expo) 0.35s forwards; }
+      .preloader.is-active .preloader__logo { animation: pl-logo 2.1s var(--ease-expo) 0.6s forwards; }
+      .preloader.is-active .preloader__tagline { animation: pl-soft 1.6s var(--ease-expo) 1.5s forwards; }
+      .preloader.is-active .preloader__bar { animation: pl-bar 1.8s var(--ease-expo) 1.3s forwards; }
+      @keyframes pl-vignette { to { opacity: 1; } }
+      @keyframes pl-soft { to { opacity: 1; transform: none; } }
+      @keyframes pl-logo {
+        0% { opacity: 0; transform: scale(1.05); filter: blur(10px); }
+        100% { opacity: 1; transform: none; filter: blur(0); }
+      }
+      @keyframes pl-bar { to { width: clamp(110px, 38vw, 220px); opacity: 1; } }
+
+      /* ---- Scroll progress ---- */
+      .scroll-progress {
+        position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: calc(var(--z-nav) + 1);
+        background: var(--gold-grad); transform: scaleX(0); transform-origin: left;
+        will-change: transform;
+      }
+
+      /* ---- Custom cursor ---- */
+      .cursor-dot, .cursor-ring {
+        position: fixed; top: 0; left: 0; z-index: var(--z-cursor);
+        pointer-events: none; border-radius: 50%;
+        translate: -50% -50%; mix-blend-mode: difference;
+      }
+      .cursor-dot { width: 6px; height: 6px; background: var(--gold-bright); }
+      .cursor-ring {
+        width: 34px; height: 34px; border: 1px solid var(--gold);
+        transition: width 0.3s var(--ease-expo), height 0.3s var(--ease-expo), background 0.3s;
+      }
+      .cursor-ring.is-grown { width: 58px; height: 58px; background: rgba(198,161,91,0.08); }
+      @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+        body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor [data-hover] { cursor: none; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        body, a, button, [data-hover] { cursor: auto !important; }
+        .cursor-dot, .cursor-ring { display: none !important; }
+      }
+    </style>
+  </body>
+</html>

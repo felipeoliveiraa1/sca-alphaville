@@ -1,0 +1,101 @@
+---
+import { Image } from 'astro:assets';
+import aerial from '../assets/images/aerial-saoroque.jpg';
+import { reach, contact } from '../data/site';
+---
+<section class="reach section" id="alcance">
+  <div class="reach__bg" aria-hidden="true">
+    <div class="reach__bg-inner" data-parallax="0.08">
+      <Image src={aerial} alt="" class="media-cover" widths={[768, 1280, 1920]} sizes="100vw" quality={70} loading="lazy" />
+    </div>
+  </div>
+  <div class="reach__glow" aria-hidden="true"></div>
+  <div class="container container--wide">
+    <div class="reach__head">
+      <p class="eyebrow" data-reveal="fade">{reach.eyebrow}</p>
+      <h2 class="reach__title" data-reveal>{reach.title}</h2>
+      <p class="reach__lead lead muted" data-reveal style="--reveal-delay:120ms">{reach.lead}</p>
+    </div>
+
+    <div class="reach__grid">
+      {reach.stats.map((s) => (
+        <div class="reach__stat" data-reveal>
+          <div class="reach__numline">
+            {s.prefix && <span class="reach__affix">{s.prefix}</span>}
+            <span class="reach__num" data-count={s.value}>0</span>
+            {s.suffix && <span class="reach__affix">{s.suffix}</span>}
+          </div>
+          <p class="reach__label">{s.label}</p>
+          <p class="reach__note">{s.note}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="reach__foot" data-reveal>
+      <span class="facet" aria-hidden="true"></span>
+      <span>Presença em {contact.locations}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reach { position: relative; overflow: clip; }
+  .reach__bg { position: absolute; inset: 0; z-index: 0; overflow: clip; }
+  .reach__bg-inner { position: absolute; inset: -10% 0; will-change: transform; }
+  .reach__bg::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(6,14,11,0.90) 0%, rgba(6,14,11,0.80) 45%, rgba(6,14,11,0.95) 100%);
+  }
+  .reach .container { position: relative; z-index: 1; }
+  .reach__glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(60% 50% at 50% 30%, rgba(43,124,94,0.12), transparent 70%);
+  }
+  .reach__head { position: relative; max-width: 38ch; margin-bottom: clamp(3rem, 7vw, 5.5rem); }
+  .reach__title { font-size: var(--fs-h2); margin-top: 1.4rem; line-height: 1.05; max-width: 16ch; }
+  .reach__lead { margin-top: 1.3rem; max-width: 40ch; }
+
+  .reach__grid {
+    position: relative;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--line);
+  }
+  .reach__stat {
+    padding: clamp(2rem, 4vw, 3rem) clamp(1rem, 2vw, 2rem) 0 0;
+    border-right: 1px solid var(--line);
+  }
+  .reach__stat:last-child { border-right: 0; }
+  .reach__numline { display: flex; align-items: flex-start; line-height: 0.9; }
+  .reach__num {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(3rem, 9vw, 7rem); letter-spacing: -0.045em;
+    background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .reach__affix {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.6rem, 4vw, 3rem); color: var(--gold); letter-spacing: -0.02em;
+    padding-top: 0.15em;
+  }
+  .reach__label { margin-top: 1rem; font-size: 1.05rem; color: var(--text-strong); font-weight: 500; letter-spacing: -0.01em; }
+  .reach__note { margin-top: 0.4rem; font-size: 0.85rem; color: var(--text-dim); line-height: 1.45; max-width: 22ch; }
+
+  .reach__foot {
+    display: flex; align-items: center; gap: 0.8rem; margin-top: clamp(2.5rem, 5vw, 4rem);
+    font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .reach__foot .facet { color: var(--gold); }
+
+  @media (max-width: 1180px) {
+    .reach__grid { grid-template-columns: 1fr 1fr; }
+    .reach__stat { border-bottom: 1px solid var(--line); padding-bottom: 2rem; }
+    .reach__stat:nth-child(2n) { border-right: 0; }
+    .reach__stat:nth-last-child(-n + 2) { border-bottom: 0; }
+  }
+  @media (max-width: 480px) {
+    .reach__grid { grid-template-columns: 1fr; }
+    .reach__stat { border-right: 0; }
+    .reach__stat:not(:last-child) { border-bottom: 1px solid var(--line); }
+    .reach__stat:last-child { border-bottom: 0; }
+  }
+</style>

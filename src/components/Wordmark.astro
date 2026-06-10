@@ -1,0 +1,10 @@
+---
+/* SCA primary wordmark — references the shared <symbol id="sca-wordmark"> in Base.astro
+   (deduped: the heavy path ships once). Uses currentColor — set color via CSS. */
+import { WORDMARK_VIEWBOX } from '../lib/wordmark';
+interface Props { class?: string; title?: string; }
+const { class: klass = '', title = 'Super Carros Alphaville' } = Astro.props;
+---
+<svg class={klass} viewBox={WORDMARK_VIEWBOX} fill="currentColor" role="img" aria-label={title} xmlns="http://www.w3.org/2000/svg">
+  <use href="#sca-wordmark"></use>
+</svg>

@@ -1,0 +1,73 @@
+---
+import { Image } from 'astro:assets';
+import lambo from '../assets/images/lambo-forest-aventador.jpg';
+---
+<section class="cinema" aria-label="Lamborghini Aventador de um membro do Super Carros Alphaville">
+  <div class="cinema__media">
+    <div class="cinema__media-inner" data-parallax="0.12">
+      <Image
+        src={lambo}
+        alt="Lamborghini Aventador grafite de um membro do Super Carros Alphaville, faróis acesos, em meio à mata ao entardecer"
+        class="media-cover cinema__img"
+        widths={[768, 1080, 1440]}
+        sizes="100vw"
+        quality={84}
+        loading="lazy"
+      />
+    </div>
+  </div>
+  <div class="cinema__scrim" aria-hidden="true"></div>
+
+  <div class="cinema__inner container container--wide">
+    <p class="eyebrow" data-reveal="fade">Presença</p>
+    <h2 class="cinema__line" data-reveal>
+      Algumas máquinas não entram em cena —
+      <span class="serif gold-text">elas são a cena.</span>
+    </h2>
+  </div>
+
+  <div class="cinema__cap" aria-hidden="true">
+    <span class="facet"></span>
+    <span>Aventador · acervo de um membro</span>
+  </div>
+</section>
+
+<style>
+  .cinema {
+    position: relative; min-height: clamp(560px, 92svh, 920px);
+    display: flex; align-items: flex-end; overflow: clip;
+    padding-bottom: clamp(3.5rem, 9vw, 8rem);
+  }
+  .cinema__media { position: absolute; inset: 0; z-index: 0; overflow: clip; }
+  .cinema__media-inner { position: absolute; inset: -8% 0; will-change: transform; }
+  .cinema__img { animation: cinema-kb 20s ease-in-out infinite alternate; }
+  @keyframes cinema-kb { from { transform: scale(1); } to { transform: scale(1.09); } }
+  @media (prefers-reduced-motion: reduce) { .cinema__img { animation: none; } }
+
+  .cinema__scrim {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(6,14,11,0.55) 0%, transparent 26%, rgba(6,14,11,0.25) 55%, rgba(6,14,11,0.96) 100%),
+      linear-gradient(90deg, rgba(6,14,11,0.78) 0%, rgba(6,14,11,0.22) 50%, transparent 78%);
+  }
+
+  .cinema__inner { position: relative; z-index: 2; width: 100%; }
+  .cinema__line {
+    font-family: var(--font-display); font-weight: 500; text-transform: none;
+    font-size: clamp(1.9rem, 4.6vw, 4.2rem); line-height: 1.1; letter-spacing: var(--track-snug);
+    max-width: 20ch; margin-top: 1.5rem;
+  }
+  .cinema__line .serif { display: inline-block; font-style: italic; font-weight: 400; }
+
+  .cinema__cap {
+    position: absolute; right: var(--gutter); bottom: clamp(1.4rem, 3vw, 2.4rem); z-index: 2;
+    display: flex; align-items: center; gap: 0.7rem;
+    font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .cinema__cap .facet { color: var(--gold); }
+
+  @media (max-width: 760px) {
+    .cinema__cap { display: none; }
+    .cinema__line { font-size: clamp(1.7rem, 7vw, 2.6rem); }
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+import { partners, contact } from '../data/site';
+const wa = `https://wa.me/${contact.whatsappDigits}`;
+const cats = [...partners.categories, ...partners.categories];
+---
+<section class="par section" id="parcerias">
+  <div class="container container--wide">
+    <div class="par__head">
+      <div>
+        <p class="eyebrow" data-reveal="fade">{partners.eyebrow}</p>
+        <h2 class="par__title" data-reveal>{partners.title}</h2>
+      </div>
+      <div class="par__intro" data-reveal style="--reveal-delay:120ms">
+        <p class="par__body">{partners.body}</p>
+        <a class="btn btn--outline-gold" href={wa} target="_blank" rel="noopener" aria-label="Seja Parceiro — falar no WhatsApp (abre em nova aba)">
+          <span>Seja Parceiro</span><span class="btn__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="par__marquee marquee" aria-label="Categorias de parceiros">
+    <div class="marquee__track">
+      {cats.map((c) => (<span class="par__cat">{c}<span class="facet" aria-hidden="true"></span></span>))}
+    </div>
+    <div class="marquee__track" aria-hidden="true">
+      {cats.map((c) => (<span class="par__cat">{c}<span class="facet" aria-hidden="true"></span></span>))}
+    </div>
+  </div>
+
+  <div class="container container--wide">
+    <div class="par__benefits" data-stagger="110">
+      {partners.benefits.map((b, i) => (
+        <article class="par__benefit">
+          <span class="index-num">0{i + 1}</span>
+          <h3 class="par__bname gold-text">{b.title}</h3>
+          <p class="par__bbody">{b.body}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .par__head { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: clamp(2rem, 5vw, 5rem); align-items: end; margin-bottom: clamp(3rem, 6vw, 5rem); }
+  .par__title { font-size: var(--fs-h2); margin-top: 1.4rem; line-height: 1.05; max-width: 18ch; }
+  .par__body { color: var(--text-muted); font-size: var(--fs-lead); line-height: 1.5; margin-bottom: 2rem; }
+
+  .par__marquee { --marquee-dur: 52s; --marquee-gap: 0; border-block: 1px solid var(--line); padding-block: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: clamp(3rem, 6vw, 5rem); }
+  .par__cat {
+    display: inline-flex; align-items: center; gap: 4rem; padding-right: 4rem;
+    font-family: var(--font-display); font-size: clamp(1.4rem, 3.5vw, 2.6rem); font-weight: 500;
+    color: var(--text); letter-spacing: -0.01em; white-space: nowrap;
+  }
+  .par__cat .facet { color: var(--gold); opacity: 0.6; }
+
+  .par__benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.2rem, 2.5vw, 2rem); }
+  .par__benefit {
+    padding: clamp(1.6rem, 3vw, 2.4rem);
+    border: 1px solid var(--line); background: var(--tint);
+    transition: border-color var(--dur-fast), background var(--dur-fast), transform var(--dur-mid) var(--ease-expo);
+  }
+  .par__benefit:hover { border-color: var(--line-gold); background: var(--tint-gold); transform: translateY(-4px); }
+  .par__bname { font-size: var(--fs-h4); margin: 1.2rem 0 0.8rem; }
+  .par__bbody { color: var(--text-muted); line-height: 1.55; font-size: 0.98rem; }
+
+  @media (max-width: 860px) {
+    .par__head { grid-template-columns: 1fr; gap: 1.6rem; }
+    .par__benefits { grid-template-columns: 1fr; }
+  }
+</style>

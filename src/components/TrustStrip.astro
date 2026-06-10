@@ -1,0 +1,48 @@
+---
+import { trustStrip } from '../data/site';
+const items = ['Membros desde 2019', '+12 Estados do Brasil', 'EUA & Europa', '140+ Edições', '2.000+ Membros', '30+ Marcas de Luxo', 'Clube Privado'];
+---
+<section class="trust" aria-label="Credenciais">
+  <div class="trust__marquee marquee">
+    <div class="marquee__track">
+      {items.map((t) => (<span class="trust__item"><span class="facet" aria-hidden="true"></span>{t}</span>))}
+    </div>
+    <div class="marquee__track" aria-hidden="true">
+      {items.map((t) => (<span class="trust__item"><span class="facet" aria-hidden="true"></span>{t}</span>))}
+    </div>
+  </div>
+
+  <div class="trust__stats container container--wide" data-stagger="100">
+    {trustStrip.map((s) => (
+      <div class="trust__stat">
+        <span class="trust__value gold-text">{s.value}</span>
+        <span class="trust__label">{s.label}</span>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .trust { position: relative; border-block: 1px solid var(--line); padding-block: clamp(2rem, 5vw, 3.5rem); }
+  .trust__marquee { --marquee-dur: 42s; --marquee-gap: 2.5rem; margin-bottom: clamp(2rem, 5vw, 3.2rem); }
+  .trust__item {
+    display: inline-flex; align-items: center; gap: 1rem;
+    font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .trust__item .facet { color: var(--gold); }
+
+  .trust__stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1.5rem, 4vw, 3rem);
+  }
+  .trust__stat {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    padding-left: 1.4rem; border-left: 1px solid var(--line-gold);
+  }
+  .trust__value { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+  .trust__label { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+
+  @media (max-width: 760px) {
+    .trust__stats { grid-template-columns: repeat(2, 1fr); gap: 1.6rem 1rem; }
+  }
+</style>

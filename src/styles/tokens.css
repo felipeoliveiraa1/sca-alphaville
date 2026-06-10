@@ -1,0 +1,88 @@
+/* ============================================================
+   SCA — Diamond Design System · Design Tokens
+   Obsidian-emerald canvas · champagne-gold jewel accent
+   ============================================================ */
+
+:root {
+  /* — Canvas: obsidian tinted with SCA emerald (not pure black) — */
+  --bg:        #060e0b;   /* page canvas */
+  --bg-1:      #081511;   /* raised surface */
+  --bg-2:      #0b1d17;   /* card / deeper panel */
+  --bg-3:      #0f2920;   /* nested / hover panel */
+  --bg-glass:  rgba(8, 21, 17, 0.72); /* sticky nav glass */
+
+  /* — Emerald (brand green) — */
+  --emerald:        #1b5e48;
+  --emerald-deep:   #0f3a2c;
+  --emerald-glow:   #2b7c5e;
+
+  /* — Gold: the single jewel accent (diamond/champagne) — */
+  --gold:        #c6a15b;
+  --gold-bright: #e7cf95;
+  --gold-deep:   #9c7c3e;
+  --champagne:   #ddccab;
+  --gold-grad:   linear-gradient(105deg, #9c7c3e 0%, #e7cf95 38%, #c6a15b 62%, #f4e6c2 100%);
+
+  /* — Text: warm off-white, white reserved for hover illumination — */
+  --text:        #ece9e1;
+  --text-strong: #ffffff;
+  --text-muted:  #9ea49a;
+  --text-dim:    #868d83;
+
+  /* — Hairlines & surface tints (thin rules, never heavy boxes) — */
+  --line:        rgba(236, 233, 225, 0.10);
+  --line-strong: rgba(236, 233, 225, 0.20);
+  --line-gold:   rgba(198, 161, 91, 0.32);
+  --tint:        rgba(236, 233, 225, 0.03);
+  --tint-gold:   rgba(198, 161, 91, 0.06);
+  --scrim:       linear-gradient(180deg, rgba(6,14,11,0) 0%, rgba(6,14,11,0.55) 55%, rgba(6,14,11,0.96) 100%);
+
+  /* — Typography — */
+  --font-display: 'Clash Display', 'Satoshi', system-ui, sans-serif;
+  --font-sans:    'Satoshi', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif:   'Zodiak', 'Times New Roman', Georgia, serif;
+
+  /* Fluid type scale */
+  --fs-eyebrow: 0.75rem;                                  /* 12px tracked label */
+  --fs-small:   0.8125rem;                                /* 13px */
+  --fs-body:    clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --fs-lead:    clamp(1.15rem, 1rem + 0.7vw, 1.6rem);
+  --fs-h4:      clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
+  --fs-h3:      clamp(1.5rem, 1.15rem + 1.5vw, 2.5rem);
+  --fs-h2:      clamp(2rem, 1.3rem + 3vw, 4rem);
+  --fs-h1:      clamp(2.6rem, 1.2rem + 6vw, 6.5rem);
+  --fs-display: clamp(3rem, 1rem + 9vw, 8.5rem);          /* hero monument */
+  --fs-numeral: clamp(3.5rem, 1rem + 11vw, 11rem);        /* giant stat numbers */
+  --fs-colossal: clamp(4rem, -2rem + 22vw, 20rem);        /* footer wordmark */
+
+  /* tracking */
+  --track-tight:  -0.03em;   /* large display */
+  --track-snug:   -0.015em;
+  --track-label:  0.22em;    /* small uppercase labels */
+  --track-wide:   0.32em;
+
+  /* — Layout — */
+  --container:        1320px;
+  --container-wide:   1560px;
+  --container-narrow: 760px;
+  --gutter:    clamp(1.25rem, 5vw, 5rem);
+  --section-y: clamp(5.5rem, 11vw, 11rem);
+  --radius:    0px;          /* square / architectural */
+  --radius-sm: 2px;
+
+  /* — Motion — */
+  --ease-expo:   cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-quad:   cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-inout:  cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-fast:   0.3s;
+  --dur-mid:    0.6s;
+  --dur-slow:   0.9s;
+  --dur-reveal: 1.1s;
+
+  /* z-index */
+  --z-nav: 100;
+  --z-cursor: 200;
+  --z-preloader: 1000;
+
+  color-scheme: dark;
+}

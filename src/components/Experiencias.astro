@@ -1,0 +1,111 @@
+---
+import { Image } from 'astro:assets';
+import { experiences } from '../data/site';
+
+import event4anos from '../assets/images/event-4anos-venue.jpg';
+import corvette from '../assets/images/corvette-z06-track.jpg';
+import aerial from '../assets/images/aerial-saoroque.jpg';
+import porsche from '../assets/images/porsche-row.jpg';
+import trackday from '../assets/images/track-day-cornering.jpg';
+
+const imageMap: Record<string, ImageMetadata> = {
+  'event-4anos-venue': event4anos,
+  'corvette-z06-track': corvette,
+  'aerial-saoroque': aerial,
+  'porsche-row': porsche,
+  'track-day-cornering': trackday,
+};
+---
+<section class="exp" id="experiencias">
+  <div class="container container--wide">
+    <div class="exp__head">
+      <p class="eyebrow" data-reveal="fade">Experiências</p>
+      <h2 class="exp__title" data-reveal>Cada encontro é uma obra de curadoria.</h2>
+      <p class="exp__lead lead muted" data-reveal style="--reveal-delay:120ms">
+        Máquinas raras. Pessoas extraordinárias. Experiências irrepetíveis.
+      </p>
+    </div>
+  </div>
+
+  <div class="exp__panels">
+    {experiences.map((e, i) => (
+      <article class={`exp__panel ${i % 2 === 1 ? 'is-right' : ''}`}>
+        <div class="exp__media">
+          <div class="exp__media-inner" data-parallax="0.1">
+            <Image
+              src={imageMap[e.image]}
+              alt={`Super Carros Alphaville — ${e.tag}: ${e.title}`}
+              class="media-cover"
+              widths={[640, 1024, 1600]}
+              sizes="(max-width: 900px) 100vw, 60vw"
+              quality={80}
+            />
+          </div>
+          <div class="exp__media-scrim"></div>
+          <span class="exp__num">0{i + 1}</span>
+        </div>
+        <div class="exp__text" data-reveal>
+          <span class="exp__tag"><span class="facet" aria-hidden="true"></span>{e.tag}</span>
+          <h3 class="exp__name">{e.title}</h3>
+          <p class="exp__body">{e.body}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .exp { position: relative; padding-block: var(--section-y); }
+  .exp__head { max-width: 40ch; margin-bottom: clamp(3rem, 7vw, 6rem); }
+  .exp__title { font-size: var(--fs-h2); margin-top: 1.4rem; line-height: 1.05; max-width: 16ch; }
+  .exp__lead { margin-top: 1.3rem; max-width: 42ch; }
+
+  .exp__panels { display: flex; flex-direction: column; gap: clamp(4rem, 10vw, 9rem); }
+  .exp__panel {
+    display: grid; grid-template-columns: 1.5fr 1fr; align-items: center;
+    gap: clamp(1.5rem, 5vw, 5rem);
+    max-width: var(--container-wide); margin-inline: auto; padding-inline: var(--gutter); width: 100%;
+  }
+  .exp__panel.is-right { grid-template-columns: 1fr 1.5fr; }
+  .exp__panel.is-right .exp__media { order: 2; }
+  .exp__panel.is-right .exp__text { order: 1; }
+
+  .exp__media {
+    position: relative; aspect-ratio: 16 / 11; overflow: clip;
+    box-shadow: inset 0 0 90px rgba(6,14,11,0.6);
+  }
+  .exp__media-inner { position: absolute; inset: -8% 0; will-change: transform; }
+  .exp__media .media-cover { transition: transform var(--dur-slow) var(--ease-expo); }
+  .exp__panel:hover .media-cover { transform: scale(1.05); }
+  .exp__media-scrim {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, transparent 28%, rgba(6,14,11,0.96) 100%),
+                linear-gradient(90deg, rgba(6,14,11,0.5), transparent 55%);
+  }
+  .exp__media::after {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    box-shadow: inset 0 0 1px var(--line-gold);
+    background: radial-gradient(120% 100% at 50% 100%, rgba(0,0,0,0.35), transparent 55%);
+  }
+  .exp__num {
+    position: absolute; left: 1.4rem; bottom: 1rem; z-index: 2;
+    font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 600;
+    color: rgba(236,233,225,0.18); line-height: 1; letter-spacing: -0.04em;
+  }
+
+  .exp__tag {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    font-size: var(--fs-eyebrow); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--gold);
+    margin-bottom: 1.4rem;
+  }
+  .exp__name { font-size: var(--fs-h3); margin-bottom: 1.2rem; max-width: 16ch; }
+  .exp__body { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; max-width: 42ch; }
+
+  @media (max-width: 900px) {
+    .exp__head { max-width: 100%; margin-bottom: clamp(2rem, 6vw, 3rem); }
+    .exp__panel, .exp__panel.is-right { grid-template-columns: 1fr; gap: 1.6rem; }
+    .exp__panel.is-right .exp__media { order: 0; }
+    .exp__panel.is-right .exp__text { order: 0; }
+    .exp__media { aspect-ratio: 4 / 3; }
+  }
+</style>
