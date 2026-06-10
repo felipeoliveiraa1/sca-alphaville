@@ -67,7 +67,7 @@ export const essence = {
       index: '01',
       title: 'Paixão Compartilhada',
       body:
-        'O elo que une nossos membros é o fascínio por supercarros e tudo o que eles representam: conquista, presença e excelência.',
+        'O elo que une nossos membros é o fascínio por supercarros e tudo o que eles representam, conquista, presença e excelência.',
     },
     {
       index: '02',
@@ -79,7 +79,7 @@ export const essence = {
       index: '03',
       title: 'Experiências Incomparáveis',
       body:
-        'Eventos projetados para entregar sempre o melhor: ambientes, curadoria e detalhes exclusivos. Do luxo ao desempenho.',
+        'Eventos projetados para entregar sempre o melhor, ambientes, curadoria e detalhes exclusivos. Do luxo ao desempenho.',
     },
   ],
 } as const;
