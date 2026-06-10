@@ -13,8 +13,8 @@ export const brand = {
   foundedLegal: 2022,
   tagline: 'Experiência Além da Velocidade',
   positioning: 'O maior ecossistema de empresários do mundo',
-  city: 'Alphaville · Barueri — SP',
-  address: 'Al. Mamoré, 503 — Conj. 194, Barueri / SP',
+  city: 'Alphaville · Barueri, SP',
+  address: 'Al. Mamoré, 503, Conj. 194, Barueri / SP',
 } as const;
 
 export const contact = {
@@ -45,7 +45,7 @@ export const hero = {
   eyebrow: 'Clube Privado · Membros desde 2019',
   titleLines: ['Experiência', 'Além da', 'Velocidade'],
   lead:
-    'Onde a paixão por supercarros encontra o networking de alto nível. Não é apenas um clube — é um universo de possibilidades, exclusividade e conexões que movem negócios.',
+    'Onde a paixão por supercarros encontra o networking de alto nível. Não é apenas um clube. É um universo de possibilidades, exclusividade e conexões que movem negócios.',
   ctaPrimary: { label: 'Seja Membro', href: '#membro' },
   ctaSecondary: { label: 'Conheça o Ecossistema', href: '#ecossistema' },
   marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '140+ Edições', '2.000+ Membros'],
@@ -67,7 +67,7 @@ export const essence = {
       index: '01',
       title: 'Paixão Compartilhada',
       body:
-        'O elo que une nossos membros é o fascínio por supercarros — e tudo o que eles representam: conquista, presença e excelência.',
+        'O elo que une nossos membros é o fascínio por supercarros e tudo o que eles representam: conquista, presença e excelência.',
     },
     {
       index: '02',
@@ -79,7 +79,7 @@ export const essence = {
       index: '03',
       title: 'Experiências Incomparáveis',
       body:
-        'Eventos projetados para entregar sempre o melhor — ambientes, curadoria e detalhes exclusivos. Do luxo ao desempenho.',
+        'Eventos projetados para entregar sempre o melhor: ambientes, curadoria e detalhes exclusivos. Do luxo ao desempenho.',
     },
   ],
 } as const;
@@ -88,7 +88,7 @@ export const about = {
   eyebrow: 'Bem-vindo ao Universo SCA',
   title: 'Mais que um clube. Um estilo de vida, um selo de exclusividade e uma plataforma de crescimento.',
   body: [
-    'O que começou como um encontro entre amigos em 2019 se transformou em uma referência nacional e internacional — reunindo empresários, influenciadores e famílias que compartilham a mesma paixão por carros.',
+    'O que começou como um encontro entre amigos em 2019 se transformou em uma referência nacional e internacional, reunindo empresários, influenciadores e famílias que compartilham a mesma paixão por carros.',
     'Proporcionamos experiências inesquecíveis que conectam pessoas e criam oportunidades reais de negócios, indo muito além da velocidade.',
   ],
   signature: 'José Édson Mendonça da Silva · Fundador & CEO',
@@ -120,7 +120,7 @@ export const experiences = [
     tag: 'Track Days',
     title: 'A pista como extensão do clube',
     body:
-      'Desempenho de verdade, no limite — com a segurança e o requinte que só um clube fechado proporciona.',
+      'Desempenho de verdade, no limite, com a segurança e o requinte que só um clube fechado proporciona.',
     image: 'corvette-z06-track',
   },
   {
@@ -134,14 +134,14 @@ export const experiences = [
     tag: 'Edições Temáticas',
     title: 'SCA JDM e capítulos exclusivos',
     body:
-      'Capítulos dedicados — como a 1ª Edição SCA JDM — celebram nichos e culturas dentro do universo automotivo.',
+      'Capítulos dedicados, como a 1ª Edição SCA JDM, celebram nichos e culturas dentro do universo automotivo.',
     image: 'porsche-row',
   },
   {
     tag: 'No Limite',
     title: 'O clube em movimento, no ápice da pista',
     body:
-      'Aventador SVJ, Huracán STO e uma matilha de esportivos traçando as curvas lado a lado — o som, a precisão e a emoção que só a pista entrega.',
+      'Aventador SVJ, Huracán STO e uma matilha de esportivos traçando as curvas lado a lado. O som, a precisão e a emoção que só a pista entrega.',
     image: 'track-day-cornering',
   },
 ] as const;
@@ -154,7 +154,7 @@ export const founder = {
     'Transformamos uma paixão de fim de semana em um dos ecossistemas de negócios mais exclusivos do país. Aqui, cada relação importa.',
   body: [
     'Rosto à frente da expansão do clube e apresentador do Podcast Super Carros Alphaville, José Édson recebe personalidades do setor automotivo e do empreendedorismo para discutir negócios, mercado e estilo de vida.',
-    'Sua visão uniu a paixão por alta performance ao networking de altíssimo nível — criando um ambiente onde empresários constroem relações que duram e geram oportunidades reais.',
+    'Sua visão uniu a paixão por alta performance ao networking de altíssimo nível, criando um ambiente onde empresários constroem relações que duram e geram oportunidades reais.',
   ],
   image: 'founder-jose-silva',
 } as const;
@@ -181,7 +181,7 @@ export const partners = {
 
 export const membership = {
   eyebrow: 'Acesso por Convite',
-  title: 'O SCA é um clube fechado. A entrada é uma decisão — e um privilégio.',
+  title: 'O SCA é um clube fechado. A entrada é uma decisão e um privilégio.',
   body:
     'Os eventos não são abertos ao público. São exclusivos para membros, suas famílias e empresas parceiras. Candidate-se e dê o primeiro passo para entrar no ecossistema.',
   tiers: [
