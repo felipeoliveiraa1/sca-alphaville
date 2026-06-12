@@ -11,16 +11,24 @@ import postalRacing from '../assets/logos/partners/postal-racing.png';
 import postalMotors from '../assets/logos/partners/postal-motors.png';
 import scaImoveis from '../assets/logos/partners/sca-imoveis.png';
 import iguatemi from '../assets/logos/partners/iguatemi-alphaville.jpg';
+import collet from '../assets/logos/partners/collet-blindagens.jpg';
+import olimpo from '../assets/logos/partners/olimpo-experience.png';
+import casaArcanjos from '../assets/logos/partners/casa-dos-arcanjos.jpg';
+import rflow from '../assets/logos/partners/rflow.jpg';
 
 const wa = `https://wa.me/${contact.whatsappDigits}`;
 
 const partnerLogos = [
   { src: countach, name: 'Countach Motors', label: 'Countach Motors' },
+  { src: olimpo, name: 'Olimpo Experience', label: 'Olimpo Experience' },
   { src: postalMotors, name: 'Postal Motors', label: 'Postal Motors' },
+  { src: collet, name: 'Collet Blindagens', label: 'Collet Blindagens' },
   { src: viotto, name: 'Clínica Viotto Alphaville', label: 'Clínica Viotto' },
   { src: postalPrime, name: 'Postal Prime', label: 'Postal Prime' },
+  { src: casaArcanjos, name: 'Casa dos Arcanjos', label: 'Casa dos Arcanjos' },
   { src: iguatemi, name: 'Iguatemi Alphaville', label: 'Iguatemi' },
   { src: postalDetail, name: 'Postal Detail', label: 'Postal Detail' },
+  { src: rflow, name: 'RFlow Escapamentos', label: 'RFlow' },
   { src: scaImoveis, name: 'SCA Imóveis', label: 'SCA Imóveis' },
   { src: postalParts, name: 'Postal Parts', label: 'Postal Parts' },
   { src: postalRacing, name: 'Postal Racing', label: 'Postal Racing' },
@@ -84,11 +92,11 @@ const partnerLogos = [
   .par__stage {
     position: relative;
     border-block: 1px solid var(--line);
-    padding-block: clamp(2.8rem, 6vw, 5rem);
+    padding-block: clamp(1.6rem, 3.5vw, 3rem);
     margin-bottom: clamp(3rem, 6vw, 5rem);
   }
   .par__slides {
-    position: relative; height: clamp(184px, 22vw, 240px);
+    position: relative; height: clamp(150px, 16vw, 200px);
     --par-gap: clamp(140px, 17vw, 250px);
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
@@ -110,10 +118,10 @@ const partnerLogos = [
 
   .par__badge {
     width: clamp(96px, 11vw, 132px); aspect-ratio: 1; border-radius: 50%; overflow: hidden;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--line-strong); background: var(--bg-1);
     box-shadow: 0 0 0 6px var(--tint), 0 22px 52px -24px rgba(0,0,0,0.9);
   }
-  .par__badge :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .par__badge :global(img) { width: 100%; height: 100%; object-fit: contain; display: block; }
   .par__name {
     font-family: var(--font-display); font-weight: 500;
     font-size: clamp(1rem, 1.6vw, 1.35rem); letter-spacing: 0.01em; color: var(--text-strong);
@@ -121,7 +129,7 @@ const partnerLogos = [
   }
   .par__slide[data-dist="0"] .par__name { opacity: 1; }
 
-  .par__nav { display: flex; align-items: center; justify-content: center; margin-top: clamp(1.8rem, 3.5vw, 2.6rem); }
+  .par__nav { display: flex; align-items: center; justify-content: center; margin-top: clamp(1.1rem, 2.4vw, 1.7rem); }
   .par__dots { display: flex; gap: 0.5rem; }
   .par__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line-strong); transition: background var(--dur-fast) var(--ease-quad), transform var(--dur-fast) var(--ease-quad); }
   .par__dot.is-active { background: var(--gold); transform: scale(1.35); }
