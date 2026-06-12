@@ -25,6 +25,7 @@ const partnerLogos = [
   { src: postalParts, name: 'Postal Parts', label: 'Postal Parts' },
   { src: postalRacing, name: 'Postal Racing', label: 'Postal Racing' },
 ];
+const total = String(partnerLogos.length).padStart(2, '0');
 ---
 <section class="par section" id="parcerias">
   <div class="container container--wide">
@@ -43,13 +44,21 @@ const partnerLogos = [
   </div>
 
   <div class="container container--wide">
-    <div class="par__wall" aria-label="Parceiros do Super Carros Alphaville">
-      {partnerLogos.map((l, i) => (
-        <span class="par__item" data-reveal style={`--reveal-delay:${i * 60}ms`}>
-          <span class="par__badge"><Image src={l.src} alt={l.name} widths={[120, 240]} sizes="120px" quality={80} /></span>
-          <span class="par__name">{l.label}</span>
-        </span>
-      ))}
+    <div class="par__stage" data-partner-rotator data-reveal aria-label="Parceiros do Super Carros Alphaville">
+      <div class="par__slides">
+        {partnerLogos.map((l, i) => (
+          <figure class={`par__slide ${i === 0 ? 'is-active' : ''}`} aria-hidden={i !== 0 ? 'true' : 'false'}>
+            <span class="par__badge"><Image src={l.src} alt={l.name} widths={[160, 320]} sizes="160px" quality={82} /></span>
+            <figcaption class="par__name">{l.label}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <div class="par__nav">
+        <span class="par__counter"><span data-partner-current>01</span><span class="par__counter-sep">/</span>{total}</span>
+        <div class="par__dots">
+          {partnerLogos.map((_, i) => (<span class={`par__dot ${i === 0 ? 'is-active' : ''}`}></span>))}
+        </div>
+      </div>
     </div>
   </div>
 
@@ -71,35 +80,48 @@ const partnerLogos = [
   .par__title { font-size: var(--fs-h2); margin-top: 1.4rem; line-height: 1.05; max-width: 18ch; }
   .par__body { color: var(--text-muted); font-size: var(--fs-lead); line-height: 1.5; margin-bottom: 2rem; }
 
-  .par__wall {
-    display: flex; flex-wrap: wrap; justify-content: center;
-    gap: clamp(1.8rem, 3.5vw, 3.2rem) clamp(1.4rem, 3vw, 3rem);
+  .par__stage {
+    position: relative;
     border-block: 1px solid var(--line);
-    padding-block: clamp(2.6rem, 5vw, 4.2rem);
+    padding-block: clamp(2.8rem, 6vw, 5rem);
     margin-bottom: clamp(3rem, 6vw, 5rem);
   }
-  .par__item {
-    flex: none; display: inline-flex; flex-direction: column; align-items: center; gap: 0.9rem;
-    width: clamp(112px, 11vw, 142px);
+  .par__slides { position: relative; height: clamp(168px, 22vw, 224px); }
+  .par__slide {
+    position: absolute; inset: 0; margin: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem;
+    opacity: 0; transform: translateY(28px) scale(0.94); filter: blur(10px);
+    transition: opacity 0.85s var(--ease-expo), transform 0.85s var(--ease-expo), filter 0.85s var(--ease-expo);
+    pointer-events: none;
   }
+  .par__slide.is-active { opacity: 1; transform: none; filter: none; }
+  .par__slide.is-leaving { opacity: 0; transform: translateY(-28px) scale(1.05); filter: blur(10px); }
+
   .par__badge {
-    width: clamp(88px, 8.5vw, 116px); aspect-ratio: 1;
-    border-radius: 50%; overflow: hidden;
+    width: clamp(96px, 11vw, 132px); aspect-ratio: 1; border-radius: 50%; overflow: hidden;
     border: 1px solid var(--line-strong);
-    box-shadow: 0 0 0 5px var(--tint), 0 16px 38px -22px rgba(0,0,0,0.85);
-    transition: border-color var(--dur-fast), box-shadow var(--dur-fast), transform var(--dur-mid) var(--ease-expo);
+    box-shadow: 0 0 0 6px var(--tint), 0 22px 52px -24px rgba(0,0,0,0.9);
   }
   .par__badge :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
   .par__name {
-    font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-dim); text-align: center; white-space: nowrap; transition: color var(--dur-fast);
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1rem, 1.6vw, 1.35rem); letter-spacing: 0.01em; color: var(--text-strong);
   }
-  .par__item:hover .par__badge {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 5px var(--tint-gold), 0 18px 42px -20px rgba(0,0,0,0.9);
-    transform: translateY(-5px);
-  }
-  .par__item:hover .par__name { color: var(--gold); }
+
+  .par__nav { display: flex; align-items: center; justify-content: center; gap: 1.4rem; margin-top: clamp(1.8rem, 3.5vw, 2.6rem); }
+  .par__counter { font-family: var(--font-display); font-size: 0.82rem; letter-spacing: 0.12em; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .par__counter [data-partner-current] { color: var(--gold); }
+  .par__counter-sep { margin: 0 0.35rem; color: var(--text-dim); }
+  .par__dots { display: flex; gap: 0.5rem; }
+  .par__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line-strong); transition: background var(--dur-fast) var(--ease-quad), transform var(--dur-fast) var(--ease-quad); }
+  .par__dot.is-active { background: var(--gold); transform: scale(1.35); }
+
+  /* reduced-motion / fallback: show every partner at once (no rotation) */
+  .par__stage.is-static .par__slides { position: static; height: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(1.8rem, 3.5vw, 3rem); }
+  .par__stage.is-static .par__slide { position: static; opacity: 1; transform: none; filter: none; gap: 0.9rem; width: clamp(112px, 11vw, 142px); }
+  .par__stage.is-static .par__badge { width: clamp(84px, 8.5vw, 112px); box-shadow: 0 0 0 5px var(--tint), 0 16px 38px -22px rgba(0,0,0,0.85); }
+  .par__stage.is-static .par__name { font-family: var(--font-sans); font-weight: 400; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); text-align: center; }
+  .par__stage.is-static .par__nav { display: none; }
 
   .par__benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.2rem, 2.5vw, 2rem); }
   .par__benefit {
@@ -116,3 +138,50 @@ const partnerLogos = [
     .par__benefits { grid-template-columns: 1fr; }
   }
 </style>
+
+<script>
+  // Partner showcase: pass through one partner at a time with entrance/exit effects.
+  const stage = document.querySelector<HTMLElement>('[data-partner-rotator]');
+  if (stage) {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const slides = Array.from(stage.querySelectorAll<HTMLElement>('.par__slide'));
+    const dots = Array.from(stage.querySelectorAll<HTMLElement>('.par__dot'));
+    const counter = stage.querySelector<HTMLElement>('[data-partner-current]');
+
+    if (reduced || slides.length < 2) {
+      // Show every partner at once; no auto-rotation under reduced-motion.
+      stage.classList.add('is-static');
+      slides.forEach((s) => s.setAttribute('aria-hidden', 'false'));
+    } else {
+      let idx = 0;
+      let timerId = 0;
+      const pad = (n: number) => String(n + 1).padStart(2, '0');
+      const show = (next: number) => {
+        const cur = slides[idx];
+        cur.classList.remove('is-active');
+        cur.classList.add('is-leaving');
+        cur.setAttribute('aria-hidden', 'true');
+        window.setTimeout(() => cur.classList.remove('is-leaving'), 850);
+        dots[idx]?.classList.remove('is-active');
+        idx = next;
+        const nx = slides[idx];
+        nx.classList.add('is-active');
+        nx.setAttribute('aria-hidden', 'false');
+        dots[idx]?.classList.add('is-active');
+        if (counter) counter.textContent = pad(idx);
+      };
+      const advance = () => show((idx + 1) % slides.length);
+      const start = () => { if (!timerId) timerId = window.setInterval(advance, 2800); };
+      const stop = () => { if (timerId) { clearInterval(timerId); timerId = 0; } };
+
+      stage.addEventListener('mouseenter', stop);
+      stage.addEventListener('mouseleave', start);
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => { if (e.isIntersecting) start(); else stop(); }),
+        { threshold: 0.25 }
+      );
+      io.observe(stage);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+    }
+  }
+</script>
