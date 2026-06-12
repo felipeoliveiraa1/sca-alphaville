@@ -1,7 +1,31 @@
 ---
+import { Image } from 'astro:assets';
 import { partners, contact } from '../data/site';
+
+import countach from '../assets/logos/partners/countach-motors.jpg';
+import viotto from '../assets/logos/partners/clinica-viotto.png';
+import postalPrime from '../assets/logos/partners/postal-prime.png';
+import postalParts from '../assets/logos/partners/postal-parts.png';
+import postalDetail from '../assets/logos/partners/postal-detail.png';
+import postalRacing from '../assets/logos/partners/postal-racing.png';
+import postalMotors from '../assets/logos/partners/postal-motors.png';
+import scaImoveis from '../assets/logos/partners/sca-imoveis.png';
+import iguatemi from '../assets/logos/partners/iguatemi-alphaville.jpg';
+
 const wa = `https://wa.me/${contact.whatsappDigits}`;
-const cats = [...partners.categories, ...partners.categories];
+
+const partnerLogos = [
+  { src: countach, name: 'Countach Motors' },
+  { src: postalMotors, name: 'Postal Motors' },
+  { src: viotto, name: 'Clínica Viotto Alphaville' },
+  { src: postalPrime, name: 'Postal Prime' },
+  { src: iguatemi, name: 'Iguatemi Alphaville' },
+  { src: postalDetail, name: 'Postal Detail' },
+  { src: scaImoveis, name: 'SCA Imóveis' },
+  { src: postalParts, name: 'Postal Parts' },
+  { src: postalRacing, name: 'Postal Racing' },
+];
+const logoTrack = [...partnerLogos, ...partnerLogos];
 ---
 <section class="par section" id="parcerias">
   <div class="container container--wide">
@@ -19,12 +43,20 @@ const cats = [...partners.categories, ...partners.categories];
     </div>
   </div>
 
-  <div class="par__marquee marquee" aria-label="Categorias de parceiros">
+  <div class="par__marquee marquee" aria-label="Parceiros do Super Carros Alphaville">
     <div class="marquee__track">
-      {cats.map((c) => (<span class="par__cat">{c}<span class="facet" aria-hidden="true"></span></span>))}
+      {logoTrack.map((l) => (
+        <span class="par__logo">
+          <Image src={l.src} alt={l.name} widths={[120, 240]} sizes="120px" quality={80} />
+        </span>
+      ))}
     </div>
     <div class="marquee__track" aria-hidden="true">
-      {cats.map((c) => (<span class="par__cat">{c}<span class="facet" aria-hidden="true"></span></span>))}
+      {logoTrack.map((l) => (
+        <span class="par__logo">
+          <Image src={l.src} alt="" widths={[120, 240]} sizes="120px" quality={80} />
+        </span>
+      ))}
     </div>
   </div>
 
@@ -46,13 +78,16 @@ const cats = [...partners.categories, ...partners.categories];
   .par__title { font-size: var(--fs-h2); margin-top: 1.4rem; line-height: 1.05; max-width: 18ch; }
   .par__body { color: var(--text-muted); font-size: var(--fs-lead); line-height: 1.5; margin-bottom: 2rem; }
 
-  .par__marquee { --marquee-dur: 52s; --marquee-gap: 0; border-block: 1px solid var(--line); padding-block: clamp(1.6rem, 3vw, 2.4rem); margin-bottom: clamp(3rem, 6vw, 5rem); }
-  .par__cat {
-    display: inline-flex; align-items: center; gap: 4rem; padding-right: 4rem;
-    font-family: var(--font-display); font-size: clamp(1.4rem, 3.5vw, 2.6rem); font-weight: 500;
-    color: var(--text); letter-spacing: -0.01em; white-space: nowrap;
+  .par__marquee { --marquee-dur: 48s; --marquee-gap: clamp(1.4rem, 2.5vw, 2.6rem); border-block: 1px solid var(--line); padding-block: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: clamp(3rem, 6vw, 5rem); }
+  .par__logo {
+    flex: none; display: block;
+    width: clamp(88px, 9vw, 120px); aspect-ratio: 1;
+    border: 1px solid var(--line); overflow: hidden;
+    opacity: 0.82;
+    transition: opacity var(--dur-fast) var(--ease-quad), border-color var(--dur-fast), transform var(--dur-mid) var(--ease-expo);
   }
-  .par__cat .facet { color: var(--gold); opacity: 0.6; }
+  .par__logo :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .par__logo:hover { opacity: 1; border-color: var(--line-gold); transform: translateY(-4px); }
 
   .par__benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.2rem, 2.5vw, 2rem); }
   .par__benefit {
