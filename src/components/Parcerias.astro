@@ -25,7 +25,6 @@ const partnerLogos = [
   { src: postalParts, name: 'Postal Parts', label: 'Postal Parts' },
   { src: postalRacing, name: 'Postal Racing', label: 'Postal Racing' },
 ];
-const total = String(partnerLogos.length).padStart(2, '0');
 ---
 <section class="par section" id="parcerias">
   <div class="container container--wide">
@@ -43,21 +42,23 @@ const total = String(partnerLogos.length).padStart(2, '0');
     </div>
   </div>
 
-  <div class="container container--wide">
-    <div class="par__stage" data-partner-rotator data-reveal aria-label="Parceiros do Super Carros Alphaville">
-      <div class="par__slides">
-        {partnerLogos.map((l, i) => (
-          <figure class={`par__slide ${i === 0 ? 'is-active' : ''}`} aria-hidden={i !== 0 ? 'true' : 'false'}>
+  <div class="par__stage" data-partner-rotator data-reveal aria-label="Parceiros do Super Carros Alphaville">
+    <div class="par__slides">
+      {partnerLogos.map((l, i) => {
+        let off = i;
+        if (off > partnerLogos.length / 2) off -= partnerLogos.length;
+        const dist = Math.min(Math.abs(off), 4);
+        return (
+          <figure class="par__slide" data-dist={dist} style={`--offset:${off}`} aria-hidden={off !== 0 ? 'true' : 'false'}>
             <span class="par__badge"><Image src={l.src} alt={l.name} widths={[160, 320]} sizes="160px" quality={82} /></span>
             <figcaption class="par__name">{l.label}</figcaption>
           </figure>
-        ))}
-      </div>
-      <div class="par__nav">
-        <span class="par__counter"><span data-partner-current>01</span><span class="par__counter-sep">/</span>{total}</span>
-        <div class="par__dots">
-          {partnerLogos.map((_, i) => (<span class={`par__dot ${i === 0 ? 'is-active' : ''}`}></span>))}
-        </div>
+        );
+      })}
+    </div>
+    <div class="par__nav">
+      <div class="par__dots">
+        {partnerLogos.map((_, i) => (<span class={`par__dot ${i === 0 ? 'is-active' : ''}`}></span>))}
       </div>
     </div>
   </div>
@@ -86,16 +87,26 @@ const total = String(partnerLogos.length).padStart(2, '0');
     padding-block: clamp(2.8rem, 6vw, 5rem);
     margin-bottom: clamp(3rem, 6vw, 5rem);
   }
-  .par__slides { position: relative; height: clamp(168px, 22vw, 224px); }
-  .par__slide {
-    position: absolute; inset: 0; margin: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem;
-    opacity: 0; transform: translateY(28px) scale(0.94); filter: blur(10px);
-    transition: opacity 0.85s var(--ease-expo), transform 0.85s var(--ease-expo), filter 0.85s var(--ease-expo);
-    pointer-events: none;
+  .par__slides {
+    position: relative; height: clamp(184px, 22vw, 240px);
+    --par-gap: clamp(140px, 17vw, 250px);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
   }
-  .par__slide.is-active { opacity: 1; transform: none; filter: none; }
-  .par__slide.is-leaving { opacity: 0; transform: translateY(-28px) scale(1.05); filter: blur(10px); }
+  /* Coverflow: active centered & large; neighbours peek to both sides, dimmed/scaled. */
+  .par__slide {
+    position: absolute; top: 50%; left: 50%; margin: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 1.1rem;
+    --offset: 0; --s: 1;
+    transform: translate(-50%, -50%) translateX(calc(var(--offset) * var(--par-gap))) scale(var(--s));
+    opacity: 0; pointer-events: none; will-change: transform, opacity;
+    transition: transform 0.9s var(--ease-expo), opacity 0.9s var(--ease-expo), filter 0.9s var(--ease-expo);
+  }
+  .par__slide[data-dist="0"] { --s: 1;    opacity: 1;    z-index: 6; filter: none; }
+  .par__slide[data-dist="1"] { --s: 0.6;  opacity: 0.42; z-index: 4; filter: grayscale(0.35); }
+  .par__slide[data-dist="2"] { --s: 0.46; opacity: 0.18; z-index: 3; filter: grayscale(0.55); }
+  .par__slide[data-dist="3"] { --s: 0.4;  opacity: 0.08; z-index: 2; filter: grayscale(0.7); }
+  .par__slide[data-dist="4"] { --s: 0.4;  opacity: 0;    z-index: 1; }
 
   .par__badge {
     width: clamp(96px, 11vw, 132px); aspect-ratio: 1; border-radius: 50%; overflow: hidden;
@@ -106,21 +117,20 @@ const total = String(partnerLogos.length).padStart(2, '0');
   .par__name {
     font-family: var(--font-display); font-weight: 500;
     font-size: clamp(1rem, 1.6vw, 1.35rem); letter-spacing: 0.01em; color: var(--text-strong);
+    opacity: 0; transition: opacity 0.6s var(--ease-expo);
   }
+  .par__slide[data-dist="0"] .par__name { opacity: 1; }
 
-  .par__nav { display: flex; align-items: center; justify-content: center; gap: 1.4rem; margin-top: clamp(1.8rem, 3.5vw, 2.6rem); }
-  .par__counter { font-family: var(--font-display); font-size: 0.82rem; letter-spacing: 0.12em; color: var(--text-muted); font-variant-numeric: tabular-nums; }
-  .par__counter [data-partner-current] { color: var(--gold); }
-  .par__counter-sep { margin: 0 0.35rem; color: var(--text-dim); }
+  .par__nav { display: flex; align-items: center; justify-content: center; margin-top: clamp(1.8rem, 3.5vw, 2.6rem); }
   .par__dots { display: flex; gap: 0.5rem; }
   .par__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--line-strong); transition: background var(--dur-fast) var(--ease-quad), transform var(--dur-fast) var(--ease-quad); }
   .par__dot.is-active { background: var(--gold); transform: scale(1.35); }
 
   /* reduced-motion / fallback: show every partner at once (no rotation) */
-  .par__stage.is-static .par__slides { position: static; height: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(1.8rem, 3.5vw, 3rem); }
+  .par__stage.is-static .par__slides { position: static; height: auto; display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(1.8rem, 3.5vw, 3rem); -webkit-mask-image: none; mask-image: none; }
   .par__stage.is-static .par__slide { position: static; opacity: 1; transform: none; filter: none; gap: 0.9rem; width: clamp(112px, 11vw, 142px); }
   .par__stage.is-static .par__badge { width: clamp(84px, 8.5vw, 112px); box-shadow: 0 0 0 5px var(--tint), 0 16px 38px -22px rgba(0,0,0,0.85); }
-  .par__stage.is-static .par__name { font-family: var(--font-sans); font-weight: 400; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); text-align: center; }
+  .par__stage.is-static .par__name { font-family: var(--font-sans); font-weight: 400; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); text-align: center; opacity: 1; }
   .par__stage.is-static .par__nav { display: none; }
 
   .par__benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.2rem, 2.5vw, 2rem); }
@@ -146,34 +156,32 @@ const total = String(partnerLogos.length).padStart(2, '0');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const slides = Array.from(stage.querySelectorAll<HTMLElement>('.par__slide'));
     const dots = Array.from(stage.querySelectorAll<HTMLElement>('.par__dot'));
-    const counter = stage.querySelector<HTMLElement>('[data-partner-current]');
 
     if (reduced || slides.length < 2) {
       // Show every partner at once; no auto-rotation under reduced-motion.
       stage.classList.add('is-static');
       slides.forEach((s) => s.setAttribute('aria-hidden', 'false'));
     } else {
+      const n = slides.length;
+      const half = n / 2;
       let idx = 0;
       let timerId = 0;
-      const pad = (n: number) => String(n + 1).padStart(2, '0');
-      const show = (next: number) => {
-        const cur = slides[idx];
-        cur.classList.remove('is-active');
-        cur.classList.add('is-leaving');
-        cur.setAttribute('aria-hidden', 'true');
-        window.setTimeout(() => cur.classList.remove('is-leaving'), 850);
-        dots[idx]?.classList.remove('is-active');
-        idx = next;
-        const nx = slides[idx];
-        nx.classList.add('is-active');
-        nx.setAttribute('aria-hidden', 'false');
-        dots[idx]?.classList.add('is-active');
-        if (counter) counter.textContent = pad(idx);
+      const render = () => {
+        slides.forEach((s, i) => {
+          let off = i - idx;
+          if (off > half) off -= n;
+          else if (off < -half) off += n;
+          s.style.setProperty('--offset', String(off));
+          s.dataset.dist = String(Math.min(Math.abs(off), 4));
+          s.setAttribute('aria-hidden', off === 0 ? 'false' : 'true');
+        });
+        dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
       };
-      const advance = () => show((idx + 1) % slides.length);
+      const advance = () => { idx = (idx + 1) % n; render(); };
       const start = () => { if (!timerId) timerId = window.setInterval(advance, 2800); };
       const stop = () => { if (timerId) { clearInterval(timerId); timerId = 0; } };
 
+      render();
       stage.addEventListener('mouseenter', stop);
       stage.addEventListener('mouseleave', start);
       const io = new IntersectionObserver(
