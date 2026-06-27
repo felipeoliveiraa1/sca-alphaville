@@ -91,6 +91,9 @@ const partnerLogos = [
 
   .par__stage {
     position: relative;
+    /* coverflow slides translate far off-centre; clip them so they never
+       widen the page (was causing horizontal scroll on mobile) */
+    overflow: hidden;
     border-block: 1px solid var(--line);
     padding-block: clamp(1.6rem, 3.5vw, 3rem);
     margin-bottom: clamp(3rem, 6vw, 5rem);
