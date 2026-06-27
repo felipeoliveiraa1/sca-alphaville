@@ -96,17 +96,21 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
 
     <script>
       import { initMotion } from '../lib/motion';
+      import { initGsap } from '../lib/motion-gsap';
       initMotion();
+      initGsap();
     </script>
 
-    <!-- Failsafe: if the motion bundle never boots, never leave content hidden -->
+    <!-- Failsafe: if either motion bundle never boots, never leave content hidden -->
     <script is:inline>
       setTimeout(function () {
         if (!window.__scaMotion) {
-          document.documentElement.classList.add('reveal-all');
           document.body.classList.remove('is-loading');
           var p = document.querySelector('[data-preloader]');
           if (p) p.style.display = 'none';
+        }
+        if (!window.__scaMotion || !window.__scaGsap) {
+          document.documentElement.classList.add('reveal-all');
         }
       }, 4000);
     </script>

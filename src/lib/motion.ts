@@ -2,97 +2,6 @@
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ---------- Scroll reveals (IntersectionObserver) ---------- */
-function initReveals() {
-  const els = document.querySelectorAll<HTMLElement>('[data-reveal], .line-mask, [data-stagger]');
-  if (reduced) {
-    els.forEach((el) => el.classList.add('is-in'));
-    return;
-  }
-  let remaining = els.length;
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const el = e.target as HTMLElement;
-        // stagger children
-        if (el.hasAttribute('data-stagger')) {
-          const step = Number(el.getAttribute('data-stagger')) || 90;
-          Array.from(el.children).forEach((child, i) => {
-            (child as HTMLElement).style.setProperty('--reveal-delay', `${i * step}ms`);
-            (child as HTMLElement).classList.add('is-in');
-          });
-        }
-        el.classList.add('is-in');
-        io.unobserve(el);
-        if (--remaining <= 0) io.disconnect();
-      });
-    },
-    { threshold: 0.16, rootMargin: '0px 0px -8% 0px' }
-  );
-  els.forEach((el) => io.observe(el));
-}
-
-/* ---------- Count-up odometers ---------- */
-function initCounters() {
-  const nums = document.querySelectorAll<HTMLElement>('[data-count]');
-  const fmt = (n: number) => n.toLocaleString('pt-BR');
-  const run = (el: HTMLElement) => {
-    const target = Number(el.getAttribute('data-count')) || 0;
-    if (reduced) { el.textContent = fmt(target); return; }
-    const dur = 1700;
-    let start: number | null = null;
-    const tick = (t: number) => {
-      if (start === null) start = t;
-      const p = Math.min((t - start) / dur, 1);
-      const eased = 1 - Math.pow(1 - p, 4); // easeOutQuart
-      el.textContent = fmt(Math.round(target * eased));
-      if (p < 1) requestAnimationFrame(tick);
-      else el.textContent = fmt(target);
-    };
-    requestAnimationFrame(tick);
-  };
-  let remaining = nums.length;
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          run(e.target as HTMLElement);
-          io.unobserve(e.target);
-          if (--remaining <= 0) io.disconnect();
-        }
-      });
-    },
-    { threshold: 0.5 }
-  );
-  nums.forEach((n) => io.observe(n));
-}
-
-/* ---------- Parallax (rAF, transform translateY) ---------- */
-function initParallax() {
-  if (reduced) return;
-  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax]'));
-  if (!items.length) return;
-  let ticking = false;
-  const update = () => {
-    const vh = window.innerHeight;
-    items.forEach((el) => {
-      const speed = Number(el.getAttribute('data-parallax')) || 0.12;
-      const rect = el.getBoundingClientRect();
-      const center = rect.top + rect.height / 2;
-      const offset = (center - vh / 2) * speed * -1;
-      el.style.transform = `translate3d(0, ${offset.toFixed(2)}px, 0)`;
-    });
-    ticking = false;
-  };
-  const onScroll = () => {
-    if (!ticking) { requestAnimationFrame(update); ticking = true; }
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
-  update();
-}
-
 /* ---------- Smooth inertia scrolling (desktop / fine-pointer only) ---------- */
 function initSmoothScroll() {
   if (reduced) return;
@@ -208,6 +117,9 @@ function initPreloader() {
   const done = () => {
     pre.classList.add('is-done');
     document.body.classList.remove('is-loading');
+    // Tell the GSAP layer the curtain is lifting so the hero intro can fire.
+    (window as unknown as { __scaPreloaded?: boolean }).__scaPreloaded = true;
+    window.dispatchEvent(new Event('sca:preloaded'));
     window.setTimeout(() => pre.remove(), 1500);
   };
   if (reduced) { done(); return; }
@@ -251,9 +163,7 @@ export function initMotion() {
   (window as unknown as { __scaMotion?: boolean }).__scaMotion = true;
   const boot = () => {
     initPreloader();
-    initReveals();
-    initCounters();
-    initParallax();
+    // reveals, counters and parallax are now driven by the GSAP layer (motion-gsap.ts)
     initSmoothScroll();
     initNav();
     initMenu();
