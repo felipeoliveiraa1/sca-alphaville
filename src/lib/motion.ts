@@ -239,9 +239,15 @@ function initAudio() {
     fadeId = requestAnimationFrame(step);
   };
 
+  // Intent flag kills the play/pause race: if the user hits pause while a
+  // play() promise is still pending, the late resolve must NOT restart audio.
+  let wantPlaying = false;
+
   const play = () => {
+    wantPlaying = true;
     if (canSetVolume) audio.volume = 0;
     audio.play().then(() => {
+      if (!wantPlaying) { audio.pause(); return; }
       toggle.classList.add('is-playing');
       toggle.setAttribute('aria-pressed', 'true');
       fade(TARGET);
@@ -253,8 +259,9 @@ function initAudio() {
     });
   };
   const stop = () => {
+    wantPlaying = false;
     if (fadeId) { cancelAnimationFrame(fadeId); fadeId = 0; }
-    fade(0, () => audio.pause());
+    fade(0, () => { if (!wantPlaying) audio.pause(); });
     toggle.classList.remove('is-playing');
     toggle.setAttribute('aria-pressed', 'false');
     try { localStorage.setItem(KEY, 'off'); } catch { /* ignore */ }
@@ -264,56 +271,46 @@ function initAudio() {
     if (toggle.classList.contains('is-playing')) stop(); else play();
   });
 
-  // Remember preference: if the user had it on, resume after their first gesture.
-  // Must be an activation-triggering event — on iOS touch, pointerdown is NOT
-  // (WebKit only unlocks media on pointerup/click/keydown), so play() would
-  // reject and the once-listener would be burned for the whole visit.
-  let pref = 'off';
-  try { pref = localStorage.getItem(KEY) || 'off'; } catch { /* ignore */ }
-  if (pref === 'on') {
-    const resume = () => { play(); window.removeEventListener('pointerup', resume); window.removeEventListener('keydown', resume); };
-    window.addEventListener('pointerup', resume, { once: true });
-    window.addEventListener('keydown', resume, { once: true });
+  // Play straight away. Browsers usually block sound before the first gesture,
+  // so: try immediately, and if refused, start on the visitor's FIRST gesture
+  // anywhere on the page. Activation-triggering events only — on iOS touch,
+  // pointerdown does NOT unlock media (pointerup/click/keydown do).
+  // Only visitors who explicitly turned sound off stay silent next visit.
+  let pref: string | null = null;
+  try { pref = localStorage.getItem(KEY); } catch { /* ignore */ }
+  if (pref !== 'off') {
+    const disarm = () => {
+      window.removeEventListener('pointerup', onGesture);
+      window.removeEventListener('touchend', onGesture);
+      window.removeEventListener('keydown', onGesture);
+    };
+    const onGesture = (e: Event) => {
+      // A first tap on the toggle itself must behave as a plain toggle press,
+      // not "auto-start then immediately stop".
+      const t = e.target as Element | null;
+      if (t && typeof t.closest === 'function' && t.closest('[data-audio-toggle]')) { disarm(); return; }
+      play();
+      disarm();
+    };
+    if (canSetVolume) audio.volume = 0;
+    audio.play().then(() => {
+      // Autoplay allowed (e.g. high media-engagement or repeat visits) — fade in.
+      toggle.classList.add('is-playing');
+      toggle.setAttribute('aria-pressed', 'true');
+      fade(TARGET);
+    }).catch(() => {
+      window.addEventListener('pointerup', onGesture);
+      window.addEventListener('touchend', onGesture);
+      window.addEventListener('keydown', onGesture);
+    });
   }
 
-  // Be a good citizen: pause when the tab is hidden, resume if it was playing.
+  // Be a good citizen: pause when the tab is hidden, resume only if the user
+  // still wants sound (intent flag, not CSS class — classes can desync).
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { if (!audio.paused) audio.pause(); }
-    else if (toggle.classList.contains('is-playing') && audio.paused) audio.play().catch(() => {});
+    else if (wantPlaying && audio.paused) audio.play().catch(() => {});
   });
-}
-
-/* ---------- Sound invite: the concierge's suggestion, not a pop-up ---------- */
-function initSoundInvite() {
-  const pill = document.querySelector<HTMLElement>('[data-sound-invite]');
-  const toggle = document.querySelector<HTMLButtonElement>('[data-audio-toggle]');
-  if (!pill || !toggle || reduced) return;
-
-  // Returning visitors with a stated preference are never re-asked.
-  let pref: string | null = null;
-  try { pref = localStorage.getItem('sca-sound'); } catch { /* ignore */ }
-  if (pref !== null) return;
-
-  let hideTimer = 0;
-  const hide = () => {
-    pill.classList.remove('is-visible');
-    window.clearTimeout(hideTimer);
-    window.setTimeout(() => { pill.hidden = true; }, 700);
-  };
-  const show = () => {
-    pill.hidden = false;
-    requestAnimationFrame(() => pill.classList.add('is-visible'));
-    hideTimer = window.setTimeout(hide, 7000); // fades away on its own; may return next visit
-  };
-
-  pill.querySelector('[data-sound-accept]')?.addEventListener('click', () => { toggle.click(); hide(); });
-  pill.querySelector('[data-sound-dismiss]')?.addEventListener('click', () => {
-    try { localStorage.setItem('sca-sound', 'off'); } catch { /* ignore */ }
-    hide();
-  });
-
-  if ((window as unknown as { __scaPreloaded?: boolean }).__scaPreloaded) window.setTimeout(show, 900);
-  else window.addEventListener('sca:preloaded', () => window.setTimeout(show, 900), { once: true });
 }
 
 export function initMotion() {
@@ -327,7 +324,6 @@ export function initMotion() {
     initCursor();
     initMagnetic();
     initAudio();
-    initSoundInvite();
   };
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);

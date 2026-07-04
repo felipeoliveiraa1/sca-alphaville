@@ -97,13 +97,6 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
       <span class="sound__label">Som</span>
     </button>
 
-    <!-- Concierge sound invite: appears once after the curtain lifts, retires itself -->
-    <div class="sound-invite" data-sound-invite hidden role="status">
-      <span class="sound-invite__text">Melhor com som</span>
-      <button class="sound-invite__cta" type="button" data-sound-accept>Ativar</button>
-      <button class="sound-invite__dismiss" type="button" data-sound-dismiss aria-label="Dispensar convite de som">×</button>
-    </div>
-
     <!-- A Agulha: jewelled scroll needle (mobile signature; GSAP drives rotation) -->
     <button class="needle" data-needle type="button" aria-label="Voltar ao topo">
       <span class="facet" aria-hidden="true"></span>
@@ -269,41 +262,6 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
         .sound__label { display: none; }
         .sound { padding: 0.55rem; }
       }
-
-      /* ---- Concierge sound invite ---- */
-      .sound-invite {
-        position: fixed; left: 50%; bottom: clamp(4.4rem, 10vh, 5.6rem);
-        z-index: calc(var(--z-nav) - 1);
-        display: inline-flex; align-items: center; gap: 0.9rem;
-        padding: 0.55rem 0.6rem 0.55rem 1.15rem; border-radius: 999px;
-        background: rgba(8,21,17,0.94); border: 1px solid var(--line-gold);
-        opacity: 0; transform: translate(-50%, 14px);
-        transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
-        pointer-events: none;
-      }
-      .sound-invite.is-visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-      @media (min-width: 901px) {
-        .sound-invite { background: rgba(8,21,17,0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-      }
-      .sound-invite__text {
-        font-family: var(--font-sans); font-size: 0.72rem; font-weight: 500;
-        letter-spacing: 0.16em; text-transform: uppercase; color: var(--text);
-        white-space: nowrap;
-      }
-      .sound-invite__cta {
-        font-family: var(--font-sans); font-size: 0.68rem; font-weight: 700;
-        letter-spacing: 0.2em; text-transform: uppercase;
-        color: #1a1407; background: var(--gold-grad);
-        padding: 0.5em 1.1em; border-radius: 999px; cursor: pointer;
-        transition: transform var(--dur-fast) var(--ease-expo);
-      }
-      .sound-invite__cta:active { transform: scale(0.95); }
-      .sound-invite__dismiss {
-        display: grid; place-items: center; width: 1.7rem; height: 1.7rem;
-        border-radius: 50%; color: var(--text-dim); font-size: 1rem; line-height: 1;
-        cursor: pointer; transition: color var(--dur-fast);
-      }
-      .sound-invite__dismiss:hover { color: var(--text); }
 
       /* ---- A Agulha (mobile-only jewelled scroll needle) ---- */
       .needle {
