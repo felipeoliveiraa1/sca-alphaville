@@ -45,7 +45,8 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
 <style>
   .nav {
     position: fixed; inset: 0 0 auto 0; z-index: var(--z-nav);
-    transition: background var(--dur-fast) var(--ease-quad), border-color var(--dur-fast), backdrop-filter var(--dur-fast);
+    /* NEVER transition backdrop-filter (per-frame re-blur); transform enables the mobile auto-hide */
+    transition: background var(--dur-fast) var(--ease-quad), border-color var(--dur-fast), transform 0.45s var(--ease-expo);
     border-bottom: 1px solid transparent;
   }
   .nav::before {
@@ -53,13 +54,25 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
     background: linear-gradient(180deg, rgba(6,14,11,0.65), transparent);
     opacity: 1; transition: opacity var(--dur-fast);
   }
+  /* Mobile: "fake glass" — near-opaque gradient over the canvas tone. Indistinguishable
+     on dark content, zero per-frame GPU cost while scrolling. */
   .nav.is-scrolled {
-    background: var(--bg-glass);
-    backdrop-filter: blur(16px) saturate(1.2);
-    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    background: linear-gradient(180deg, rgba(8,21,17,0.94), rgba(8,21,17,0.88));
     border-bottom-color: var(--line);
   }
+  /* Desktop: real glass, static value (toggles on/off, never interpolated) */
+  @media (min-width: 901px) {
+    .nav.is-scrolled {
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px) saturate(1.15);
+      -webkit-backdrop-filter: blur(12px) saturate(1.15);
+    }
+  }
   .nav.is-scrolled::before { opacity: 0; }
+  /* Invisible butler: steps away while reading down, returns on the first upward gesture */
+  @media (max-width: 900px) {
+    .nav.is-hidden { transform: translateY(-100%); }
+  }
 
   .nav__inner {
     position: relative; z-index: 2;   /* keep logo + burger (X) above the open menu panel */

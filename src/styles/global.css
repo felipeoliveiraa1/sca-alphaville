@@ -33,6 +33,10 @@ body {
   font-feature-settings: 'ss01', 'cv01';
 }
 
+/* Guard against horizontal scroll from full-width / pinned (GSAP pin-spacer) content.
+   clip (not hidden) doesn't create a scroll container, so smooth-scroll stays intact. */
+#conteudo { overflow-x: clip; }
+
 img, picture, svg, video { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
@@ -154,20 +158,32 @@ h3, h4 { line-height: 1.08; letter-spacing: var(--track-snug); }
 .link-underline:hover { color: var(--gold-bright); }
 .link-underline:hover::after { transform: scaleX(1); transform-origin: left; }
 
-/* ---- Scroll reveal system (only hidden when JS is active) ---- */
+/* ---- Scroll reveal system v2 (only hidden when JS is active) ----
+   Mobile animates ONLY transform/opacity (cheap on phone GPUs); the de-blur
+   is a desktop-only privilege. No static will-change: transitions promote
+   their own layers while animating. */
 .js [data-reveal] {
   opacity: 0;
-  transform: translateY(38px);
-  filter: blur(7px);
-  transition: opacity var(--dur-reveal) var(--ease-expo), transform var(--dur-reveal) var(--ease-expo), filter var(--dur-reveal) var(--ease-expo);
+  transform: translateY(28px);
+  transition: opacity var(--dur-reveal) var(--ease-expo), transform var(--dur-reveal) var(--ease-expo);
   transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform, filter;
 }
 .js [data-reveal='fade'] { transform: none; }
 .js [data-reveal='left'] { transform: translateX(-44px); }
 .js [data-reveal='right'] { transform: translateX(44px); }
 .js [data-reveal='scale'] { transform: scale(1.04); }
-.js [data-reveal].is-in { opacity: 1; transform: none; filter: blur(0); }
+.js [data-reveal].is-in { opacity: 1; transform: none; }
+@media (min-width: 901px) {
+  .js [data-reveal] {
+    transform: translateY(38px);
+    filter: blur(7px);
+    transition: opacity var(--dur-reveal) var(--ease-expo), transform var(--dur-reveal) var(--ease-expo), filter var(--dur-reveal) var(--ease-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .js [data-reveal='fade'] { transform: none; }
+  .js [data-reveal='scale'] { transform: scale(1.04); }
+  .js [data-reveal].is-in { opacity: 1; transform: none; filter: blur(0); }
+}
 /* Failsafe: if the motion module never boots, force everything visible */
 .reveal-all [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; }
 @media (prefers-reduced-motion: reduce) {
@@ -198,6 +214,8 @@ h3, h4 { line-height: 1.08; letter-spacing: var(--track-snug); }
 .marquee { display: flex; overflow: hidden; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .marquee__track { display: flex; flex-shrink: 0; gap: var(--marquee-gap, 3.5rem); align-items: center; padding-right: var(--marquee-gap, 3.5rem); animation: marquee-left var(--marquee-dur, 38s) linear infinite; }
 .marquee:hover .marquee__track { animation-play-state: paused; }
+/* GSAP velocity-reactive marquee takes over from the CSS keyframes when it boots */
+.marquee.is-gsap .marquee__track { animation: none; }
 @keyframes marquee-left { to { transform: translateX(-100%); } }
 
 /* ---- Diamond / facet motif ---- */
@@ -231,3 +249,12 @@ h3, h4 { line-height: 1.08; letter-spacing: var(--track-snug); }
   color: var(--gold);
   font-weight: 500;
 }
+
+/* ---- Touch tap states (the mobile stand-in for hover) ---- */
+@media (hover: none) {
+  .btn:active { transform: scale(0.97); }
+  a:active .btn__arrow, .btn:active .btn__arrow { transform: translateX(0.3em); }
+}
+
+/* ---- Center-focus: scroll-driven stand-in for hover on touch (JS toggles .is-focus) ---- */
+.is-focus { /* per-component styles hook into this class */ }

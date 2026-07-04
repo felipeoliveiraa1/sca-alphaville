@@ -1,0 +1,155 @@
+---
+import { Image } from 'astro:assets';
+import aventador from '../assets/images/lambo-forest-aventador.jpg';
+import corvette from '../assets/images/corvette-z06-track.jpg';
+import porsche from '../assets/images/porsche-row.jpg';
+import fleet from '../assets/images/lambo-fleet-formation.jpg';
+import track from '../assets/images/track-day-cornering.jpg';
+import aerial from '../assets/images/aerial-saoroque.jpg';
+
+const cars = [
+  { src: aventador, name: 'Lamborghini Aventador', tag: 'V12 · Presença', note: 'Do acervo de um membro. A máquina que vira a cena.' },
+  { src: corvette, name: 'Corvette Z06', tag: 'Pista · Performance', note: 'Desempenho de verdade, no requinte de um clube fechado.' },
+  { src: porsche, name: 'Porsche', tag: 'Herança Esportiva', note: 'Linhas atemporais entre os membros do SCA.' },
+  { src: fleet, name: 'A Frota', tag: 'Formação SCA', note: 'Dezenas de esportivos lado a lado. Um espetáculo em movimento.' },
+  { src: track, name: 'No Limite', tag: 'Track Day', note: 'Aventador SVJ, Huracán STO e uma matilha traçando as curvas.' },
+  { src: aerial, name: 'Mega Encontro', tag: 'São Roque', note: 'Até 400 supercarros reunidos no Dream Car Museum.' },
+];
+---
+<section class="gal" id="galeria" data-gallery aria-label="A coleção do Super Carros Alphaville">
+  <div class="container container--wide gal__head">
+    <p class="eyebrow" data-reveal="fade">A Coleção</p>
+    <h2 class="gal__title" data-reveal>Máquinas que definem o clube.</h2>
+    <div class="gal__meta-row" data-reveal>
+      <p class="gal__hint" aria-hidden="true"><span>Role para percorrer</span><span class="gal__hint-line"></span></p>
+      <span class="gal__count" data-gal-count aria-hidden="true">01 / 06</span>
+    </div>
+  </div>
+
+  <div class="gal__viewport" data-gal-viewport>
+    <div class="gal__track" data-gal-track>
+      {cars.map((c, i) => (
+        <article class="gal__card" data-gal-card>
+          <div class="gal__media">
+            <Image
+              src={c.src}
+              alt={`Super Carros Alphaville · ${c.name}`}
+              class="media-cover"
+              widths={[480, 760, 1040]}
+              sizes="(max-width: 900px) 80vw, 40vw"
+              quality={80}
+              loading="lazy"
+            />
+            <div class="gal__scrim" aria-hidden="true"></div>
+            <div class="gal__dim" aria-hidden="true"></div>
+          </div>
+          <span class="gal__idx" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <div class="gal__meta">
+            <span class="gal__tag"><span class="facet" aria-hidden="true"></span>{c.tag}</span>
+            <h3 class="gal__name">{c.name}</h3>
+            <p class="gal__note">{c.note}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .gal { position: relative; background: var(--bg); overflow: clip; }
+  .gal__head {
+    padding-top: var(--section-y);
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    display: flex; flex-direction: column;
+  }
+  .gal__title { font-size: var(--fs-h2); margin-top: 1.4rem; line-height: 1.04; max-width: 18ch; }
+  .gal__meta-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.6rem; }
+  .gal__hint {
+    display: flex; align-items: center; gap: 0.8rem;
+    font-size: 0.68rem; letter-spacing: var(--track-wide); text-transform: uppercase; color: var(--text-muted);
+  }
+  .gal__hint-line { display: block; width: clamp(48px, 8vw, 120px); height: 1px; background: linear-gradient(90deg, var(--gold), transparent); }
+  .gal__count {
+    font-family: var(--font-display); font-weight: 500; font-size: 0.82rem;
+    letter-spacing: 0.14em; color: var(--gold); font-variant-numeric: tabular-nums;
+  }
+
+  /* Mobile-first: native horizontal scroll with snap */
+  .gal__viewport {
+    overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory; scrollbar-width: none;
+    padding-bottom: clamp(2.5rem, 6vw, 5rem);
+  }
+  .gal__viewport::-webkit-scrollbar { display: none; }
+  .gal__track {
+    display: flex; align-items: stretch; gap: clamp(1rem, 2vw, 2rem);
+    padding-inline: var(--gutter); width: max-content;
+  }
+  .gal__card {
+    scroll-snap-align: center; flex: 0 0 auto;
+    position: relative; width: clamp(280px, 82vw, 360px); height: clamp(380px, 62vh, 560px);
+    overflow: clip; border: 1px solid var(--line); background: var(--bg-1);
+  }
+  .gal__media { position: absolute; inset: 0; overflow: clip; }
+  .gal__media :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  @media (hover: hover) {
+    .gal__media :global(img) { transition: transform var(--dur-slow) var(--ease-expo); }
+    .gal__card:hover .gal__media :global(img) { transform: scale(1.06); }
+  }
+  .gal__scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(6,14,11,0.10) 0%, transparent 32%, rgba(6,14,11,0.55) 66%, rgba(6,14,11,0.96) 100%);
+  }
+  /* Opacity veil: the card "lights up" as it reaches centre stage (GSAP scrubs 0.55 → 0).
+     Rests at 0 so the native scroll-snap fallback shows every card lit. */
+  .gal__dim {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: #060e0b; opacity: 0;
+  }
+  .gal__idx {
+    position: absolute; top: 1rem; left: 1.1rem; z-index: 2;
+    font-family: var(--font-display); font-weight: 600; font-size: 1rem; letter-spacing: 0.1em;
+    color: var(--gold);
+  }
+  .gal__meta { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: clamp(1.2rem, 2vw, 1.8rem); }
+  .gal__tag {
+    display: inline-flex; align-items: center; gap: 0.6rem; margin-bottom: 0.7rem;
+    font-size: 0.66rem; letter-spacing: var(--track-label); text-transform: uppercase; color: var(--gold);
+  }
+  .gal__tag .facet { color: var(--gold); }
+  .gal__name { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.3rem, 2.2vw, 1.9rem); line-height: 1.05; }
+  .gal__note { margin-top: 0.6rem; color: var(--text-muted); font-size: 0.92rem; line-height: 1.5; max-width: 34ch; }
+
+  /* Desktop sizes; the base horizontal scroll-snap strip stays as the
+     no-JS / reduced-motion / GSAP-failure fallback (cards must stay reachable). */
+  @media (min-width: 901px) {
+    .gal__head { padding-bottom: clamp(1rem, 2vw, 2rem); }
+    .gal__card { width: clamp(360px, 34vw, 520px); height: clamp(420px, 62svh, 620px); }
+
+    /* Pinned parade — ONLY when JS actually drives it (.is-pinned) */
+    .gal.is-pinned { height: 100svh; min-height: min(640px, 100svh); display: flex; flex-direction: column; }
+    .gal.is-pinned .gal__viewport {
+      flex: 1; overflow: hidden; scroll-snap-type: none; padding-bottom: 0;
+      display: flex; align-items: center;
+    }
+    .gal.is-pinned .gal__track { height: 74%; align-items: center; }
+    .gal.is-pinned .gal__card { height: 100%; scroll-snap-align: none; }
+  }
+
+  /* Mobile pinned parade ("O Desfile") — activated by JS via .is-pinned; the
+     native scroll-snap above stays as the no-JS / reduced-motion fallback. */
+  @media (max-width: 900px) {
+    .gal.is-pinned { height: 100svh; display: flex; flex-direction: column; }
+    .gal.is-pinned .gal__head { padding-top: clamp(4.6rem, 12vh, 6rem); padding-bottom: 1rem; }
+    .gal.is-pinned .gal__viewport {
+      flex: 1; overflow: hidden; scroll-snap-type: none; padding-bottom: clamp(1.2rem, 4vh, 2rem);
+      display: flex; align-items: center;
+    }
+    .gal.is-pinned .gal__card { scroll-snap-align: none; height: min(58svh, 520px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gal__card { filter: none !important; transform: none !important; }
+    .gal__dim { opacity: 0 !important; }
+  }
+</style>

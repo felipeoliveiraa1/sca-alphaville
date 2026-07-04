@@ -88,6 +88,27 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
 
     <div class="scroll-progress" data-progress aria-hidden="true"></div>
 
+    <!-- Ambient sound: off by default, elegant toggle (autoplay-with-sound is blocked by browsers) -->
+    <audio data-audio loop preload="none" aria-hidden="true">
+      <source src="/audio/ambient.mp3" type="audio/mpeg" />
+    </audio>
+    <button class="sound" data-audio-toggle type="button" aria-pressed="false" aria-label="Ativar experiência sonora" data-hover>
+      <span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="sound__label">Som</span>
+    </button>
+
+    <!-- Concierge sound invite: appears once after the curtain lifts, retires itself -->
+    <div class="sound-invite" data-sound-invite hidden role="status">
+      <span class="sound-invite__text">Melhor com som</span>
+      <button class="sound-invite__cta" type="button" data-sound-accept>Ativar</button>
+      <button class="sound-invite__dismiss" type="button" data-sound-dismiss aria-label="Dispensar convite de som">×</button>
+    </div>
+
+    <!-- A Agulha: jewelled scroll needle (mobile signature; GSAP drives rotation) -->
+    <button class="needle" data-needle type="button" aria-label="Voltar ao topo">
+      <span class="facet" aria-hidden="true"></span>
+    </button>
+
     <Nav />
     <main id="conteudo">
       <slot />
@@ -195,8 +216,113 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
       }
       @media (prefers-reduced-motion: reduce) {
         body, a, button, [data-hover] { cursor: auto !important; }
-        .cursor-dot, .cursor-ring { display: none !important; }
+        .cursor-dot, .cursor-ring, .cursor-spot { display: none !important; }
       }
+
+      /* ---- Gold spotlight that trails the cursor (fine pointers) ---- */
+      .cursor-spot {
+        position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none;
+        width: 520px; height: 520px; border-radius: 50%;
+        translate: -50% -50%; opacity: 0; mix-blend-mode: screen;
+        background: radial-gradient(circle, rgba(198,161,91,0.16), rgba(198,161,91,0.06) 32%, transparent 66%);
+        transition: opacity 0.6s var(--ease-expo);
+        will-change: transform;
+      }
+      body.has-cursor .cursor-spot { opacity: 1; }
+
+      /* ---- Ambient sound toggle ---- */
+      .sound {
+        position: fixed; left: clamp(1rem, 3vw, 2rem); bottom: clamp(1rem, 3vw, 2rem);
+        z-index: calc(var(--z-nav) - 1);
+        display: inline-flex; align-items: center; gap: 0.6rem;
+        padding: 0.6rem 1rem 0.6rem 0.85rem; border-radius: 999px;
+        background: rgba(8,21,17,0.92); border: 1px solid var(--line-strong);
+        color: var(--text-muted); cursor: pointer;
+        transition: border-color var(--dur-fast) var(--ease-quad), color var(--dur-fast), background var(--dur-fast), transform var(--dur-mid) var(--ease-expo), opacity 0.8s var(--ease-expo);
+        opacity: 0; transform: translateY(10px);
+      }
+      /* real glass is a desktop privilege (backdrop-filter is pricey on mobile Safari) */
+      @media (min-width: 901px) {
+        .sound { background: rgba(6,14,11,0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+      }
+      body:not(.is-loading) .sound { opacity: 1; transform: none; }
+      .sound:hover { border-color: var(--line-gold); color: var(--text-strong); }
+      .sound__label {
+        font-family: var(--font-sans); font-size: 0.66rem; font-weight: 600;
+        letter-spacing: 0.22em; text-transform: uppercase;
+      }
+      .sound__bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+      .sound__bars > i {
+        width: 2px; height: 4px; border-radius: 1px; background: var(--gold);
+        transform-origin: bottom;
+      }
+      .sound.is-playing { border-color: var(--line-gold); color: var(--gold-bright); }
+      .sound.is-playing .sound__bars > i { animation: sound-eq 900ms var(--ease-inout) infinite; }
+      .sound.is-playing .sound__bars > i:nth-child(2) { animation-delay: 0.15s; }
+      .sound.is-playing .sound__bars > i:nth-child(3) { animation-delay: 0.3s; }
+      .sound.is-playing .sound__bars > i:nth-child(4) { animation-delay: 0.45s; }
+      @keyframes sound-eq { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+      @media (prefers-reduced-motion: reduce) {
+        .sound.is-playing .sound__bars > i { animation: none; height: 9px; }
+      }
+      @media (max-width: 600px) {
+        .sound__label { display: none; }
+        .sound { padding: 0.55rem; }
+      }
+
+      /* ---- Concierge sound invite ---- */
+      .sound-invite {
+        position: fixed; left: 50%; bottom: clamp(4.4rem, 10vh, 5.6rem);
+        z-index: calc(var(--z-nav) - 1);
+        display: inline-flex; align-items: center; gap: 0.9rem;
+        padding: 0.55rem 0.6rem 0.55rem 1.15rem; border-radius: 999px;
+        background: rgba(8,21,17,0.94); border: 1px solid var(--line-gold);
+        opacity: 0; transform: translate(-50%, 14px);
+        transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+        pointer-events: none;
+      }
+      .sound-invite.is-visible { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+      @media (min-width: 901px) {
+        .sound-invite { background: rgba(8,21,17,0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+      }
+      .sound-invite__text {
+        font-family: var(--font-sans); font-size: 0.72rem; font-weight: 500;
+        letter-spacing: 0.16em; text-transform: uppercase; color: var(--text);
+        white-space: nowrap;
+      }
+      .sound-invite__cta {
+        font-family: var(--font-sans); font-size: 0.68rem; font-weight: 700;
+        letter-spacing: 0.2em; text-transform: uppercase;
+        color: #1a1407; background: var(--gold-grad);
+        padding: 0.5em 1.1em; border-radius: 999px; cursor: pointer;
+        transition: transform var(--dur-fast) var(--ease-expo);
+      }
+      .sound-invite__cta:active { transform: scale(0.95); }
+      .sound-invite__dismiss {
+        display: grid; place-items: center; width: 1.7rem; height: 1.7rem;
+        border-radius: 50%; color: var(--text-dim); font-size: 1rem; line-height: 1;
+        cursor: pointer; transition: color var(--dur-fast);
+      }
+      .sound-invite__dismiss:hover { color: var(--text); }
+
+      /* ---- A Agulha (mobile-only jewelled scroll needle) ---- */
+      .needle {
+        position: fixed; right: clamp(1rem, 3vw, 2rem); bottom: clamp(1rem, 3vw, 2rem);
+        z-index: calc(var(--z-nav) - 1);
+        display: none; place-items: center;
+        width: 2.6rem; height: 2.6rem; border-radius: 50%;
+        background: rgba(8,21,17,0.92); border: 1px solid var(--line-strong);
+        cursor: pointer;
+        opacity: 0; transform: translateY(10px) scale(1);
+        transition: opacity 0.8s var(--ease-expo), transform 0.35s var(--ease-expo), border-color var(--dur-fast);
+      }
+      @media (max-width: 900px) {
+        .needle.is-on { display: grid; }
+        body:not(.is-loading) .needle.is-on { opacity: 1; transform: translateY(0) scale(1); }
+        body.menu-open .needle { opacity: 0 !important; pointer-events: none; }
+      }
+      .needle .facet { width: 0.72rem; height: 0.72rem; }
+      .needle.is-pulse { transform: translateY(0) scale(1.22); border-color: var(--line-gold); }
     </style>
   </body>
 </html>

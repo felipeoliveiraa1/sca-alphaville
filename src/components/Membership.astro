@@ -63,13 +63,22 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
     display: flex; flex-direction: column;
     transition: border-color var(--dur-fast), transform var(--dur-mid) var(--ease-expo);
   }
-  .mem__card:hover { transform: translateY(-5px); border-color: var(--line-strong); }
   .mem__card.is-featured {
     border-color: var(--gold);
     background: linear-gradient(155deg, rgba(198,161,91,0.11), rgba(198,161,91,0.03) 55%, var(--bg-1));
-    box-shadow: 0 28px 70px -44px rgba(198,161,91,0.5);
   }
-  .mem__card.is-featured:hover { transform: translateY(-7px); box-shadow: 0 26px 64px -34px rgba(198,161,91,0.55); }
+  /* Gold halo lives on a pre-rendered ::after; hover animates only its opacity
+     (compositor-cheap — animating box-shadow itself repaints the whole halo). */
+  .mem__card.is-featured::after {
+    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    box-shadow: 0 28px 70px -44px rgba(198,161,91,0.55);
+    opacity: 0.85; transition: opacity var(--dur-mid) var(--ease-expo);
+  }
+  @media (hover: hover) {
+    .mem__card:hover { transform: translateY(-5px); border-color: var(--line-strong); }
+    .mem__card.is-featured:hover { transform: translateY(-7px); }
+    .mem__card.is-featured:hover::after { opacity: 1; }
+  }
   .mem__badge {
     position: absolute; top: -1px; right: 1.5rem; transform: translateY(-50%);
     font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;

@@ -71,6 +71,26 @@ const partnerLogos = [
     </div>
   </div>
 
+  <!-- Mobile: "Fita de Brasões" — two counter-rotating rows driven by the scroll -->
+  <div class="par__ribbon" data-ribbon>
+    <div class="par__row" data-ribbon-row="a">
+      {partnerLogos.slice(0, 7).map((l) => (
+        <figure class="par__chip">
+          <span class="par__chip-badge"><Image src={l.src} alt={l.name} widths={[96, 192]} sizes="96px" quality={80} /></span>
+          <figcaption class="par__chip-name">{l.label}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="par__row" data-ribbon-row="b">
+      {partnerLogos.slice(7).map((l) => (
+        <figure class="par__chip">
+          <span class="par__chip-badge"><Image src={l.src} alt={l.name} widths={[96, 192]} sizes="96px" quality={80} /></span>
+          <figcaption class="par__chip-name">{l.label}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+
   <div class="container container--wide">
     <div class="par__benefits" data-stagger="110">
       {partners.benefits.map((b, i) => (
@@ -110,8 +130,9 @@ const partnerLogos = [
     display: flex; flex-direction: column; align-items: center; gap: 1.1rem;
     --offset: 0; --s: 1;
     transform: translate(-50%, -50%) translateX(calc(var(--offset) * var(--par-gap))) scale(var(--s));
-    opacity: 0; pointer-events: none; will-change: transform, opacity;
-    transition: transform 0.9s var(--ease-expo), opacity 0.9s var(--ease-expo), filter 0.9s var(--ease-expo);
+    opacity: 0; pointer-events: none;
+    /* filter deliberately NOT transitioned (per-frame re-raster); grayscale snaps per tier */
+    transition: transform 0.9s var(--ease-expo), opacity 0.9s var(--ease-expo);
   }
   .par__slide[data-dist="0"] { --s: 1;    opacity: 1;    z-index: 6; filter: none; }
   .par__slide[data-dist="1"] { --s: 0.6;  opacity: 0.42; z-index: 4; filter: grayscale(0.35); }
@@ -154,6 +175,36 @@ const partnerLogos = [
   .par__bname { font-size: var(--fs-h4); margin: 1.2rem 0 0.8rem; }
   .par__bbody { color: var(--text-muted); line-height: 1.55; font-size: 0.98rem; }
 
+  /* ---- Fita de Brasões (mobile): two scroll-driven counter-rotating rows ---- */
+  .par__ribbon {
+    display: none;
+    flex-direction: column; gap: 1.4rem;
+    overflow: hidden;
+    border-block: 1px solid var(--line);
+    padding-block: clamp(1.6rem, 5vw, 2.4rem);
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+  .par__row { display: flex; gap: clamp(1.1rem, 4vw, 1.8rem); width: max-content; padding-inline: var(--gutter); }
+  .par__chip { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.55rem; }
+  .par__chip-badge {
+    width: 76px; aspect-ratio: 1; border-radius: 50%; overflow: hidden;
+    border: 1px solid var(--line-strong); background: var(--bg-1);
+    box-shadow: 0 0 0 4px var(--tint);
+  }
+  .par__chip-badge :global(img) { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .par__chip-name {
+    font-family: var(--font-sans); font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim);
+    text-align: center; max-width: 11ch; line-height: 1.3;
+  }
+
+  @media (max-width: 900px) {
+    .par__stage { display: none; }
+    .par__ribbon { display: flex; }
+  }
+
   @media (max-width: 860px) {
     .par__head { grid-template-columns: 1fr; gap: 1.6rem; }
     .par__benefits { grid-template-columns: 1fr; }
@@ -162,8 +213,15 @@ const partnerLogos = [
 
 <script>
   // Partner showcase: pass through one partner at a time with entrance/exit effects.
+  // Mobile shows the scroll-driven ribbon instead (stage is display:none there),
+  // but the viewport can GROW past the breakpoint later (iPad rotation, window
+  // resize) — so boot lazily on first entry into desktop widths, exactly once.
   const stage = document.querySelector<HTMLElement>('[data-partner-rotator]');
-  if (stage) {
+  const mqMobile = matchMedia('(max-width: 900px)');
+  let rotatorBooted = false;
+  const bootRotator = () => {
+    if (!stage || rotatorBooted) return;
+    rotatorBooted = true;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const slides = Array.from(stage.querySelectorAll<HTMLElement>('.par__slide'));
     const dots = Array.from(stage.querySelectorAll<HTMLElement>('.par__dot'));
@@ -202,5 +260,7 @@ const partnerLogos = [
       io.observe(stage);
       document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
     }
-  }
+  };
+  if (!mqMobile.matches) bootRotator();
+  else mqMobile.addEventListener('change', (e) => { if (!e.matches) bootRotator(); });
 </script>

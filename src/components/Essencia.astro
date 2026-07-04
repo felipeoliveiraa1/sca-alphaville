@@ -76,15 +76,26 @@ import Monogram from './Monogram.astro';
     background: var(--gold-grad); transform: scaleY(0); transform-origin: bottom;
     transition: transform var(--dur-mid) var(--ease-expo);
   }
-  .ess__row:hover { padding-left: 1.6rem; }
-  .ess__row:hover::before { transform: scaleY(1); transform-origin: top; }
+  @media (hover: hover) {
+    .ess__row:hover { padding-left: 1.6rem; }
+    .ess__row:hover::before { transform: scaleY(1); transform-origin: top; }
+    .ess__row:hover .ess__name { color: var(--gold-bright); }
+    .ess__row:hover .ess__facet { opacity: 1; transform: rotate(135deg); }
+  }
 
   .ess__index { font-family: var(--font-display); font-size: 0.85rem; color: var(--gold); letter-spacing: 0.1em; align-self: start; padding-top: 0.4rem; }
   .ess__name { font-size: var(--fs-h3); transition: color var(--dur-fast); }
-  .ess__row:hover .ess__name { color: var(--gold-bright); }
   .ess__body { color: var(--text-muted); font-size: 1.02rem; line-height: 1.6; max-width: 46ch; }
   .ess__facet { color: var(--gold); opacity: 0.4; transition: opacity var(--dur-fast), transform var(--dur-mid) var(--ease-expo); }
-  .ess__row:hover .ess__facet { opacity: 1; transform: rotate(135deg); }
+
+  /* Mobile: the gold focus pours from pillar to pillar as each crosses centre
+     stage (JS toggles .is-focus). translateX, not padding — no layout work. */
+  @media (max-width: 900px) {
+    .ess__row { transition: transform var(--dur-mid) var(--ease-expo); }
+    .ess__row.is-focus { transform: translateX(0.8rem); }
+    .ess__row.is-focus::before { transform: scaleY(1); transform-origin: top; }
+    .ess__row.is-focus .ess__name { color: var(--gold-bright); }
+  }
 
   @media (max-width: 860px) {
     .ess__row { grid-template-columns: auto 1fr; gap: 0.4rem 1.4rem; padding-block: 2rem; }

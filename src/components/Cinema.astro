@@ -18,12 +18,13 @@ import lambo from '../assets/images/lambo-forest-aventador.jpg';
     </div>
   </div>
   <div class="cinema__scrim" aria-hidden="true"></div>
+  <div class="cinema__veil" aria-hidden="true"></div>
 
   <div class="cinema__inner container container--wide">
     <p class="eyebrow" data-reveal="fade">Presença</p>
     <h2 class="cinema__line" data-reveal>
-      Algumas máquinas não entram em cena.
-      <span class="serif gold-text">Elas são a cena.</span>
+      <span class="cinema__l1">Algumas máquinas não entram em cena.</span>
+      <span class="cinema__l2 serif gold-text">Elas são a cena.</span>
     </h2>
   </div>
 
@@ -51,6 +52,12 @@ import lambo from '../assets/images/lambo-forest-aventador.jpg';
       linear-gradient(180deg, rgba(6,14,11,0.55) 0%, transparent 26%, rgba(6,14,11,0.25) 55%, rgba(6,14,11,0.96) 100%),
       linear-gradient(90deg, rgba(6,14,11,0.78) 0%, rgba(6,14,11,0.22) 50%, transparent 78%);
   }
+  /* "A Aparição": black veil the mobile pin dissolves (headlights in the dark).
+     Rests at 0 so desktop / no-JS never see it. */
+  .cinema__veil {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: #020604; opacity: 0;
+  }
 
   .cinema__inner { position: relative; z-index: 2; width: 100%; }
   .cinema__line {
@@ -58,7 +65,10 @@ import lambo from '../assets/images/lambo-forest-aventador.jpg';
     font-size: clamp(1.9rem, 4.6vw, 4.2rem); line-height: 1.1; letter-spacing: var(--track-snug);
     max-width: 20ch; margin-top: 1.5rem;
   }
-  .cinema__line .serif { display: inline-block; font-style: italic; font-weight: 400; }
+  .cinema__l1 { display: inline; }
+  .cinema__l2, .cinema__line .serif { display: inline-block; font-style: italic; font-weight: 400; }
+  /* Pinned scene (mobile, JS-driven): full stable viewport height */
+  .cinema.is-pinned { min-height: 100svh; }
 
   .cinema__cap {
     position: absolute; right: var(--gutter); bottom: clamp(1.4rem, 3vw, 2.4rem); z-index: 2;

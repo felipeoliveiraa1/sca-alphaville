@@ -23,6 +23,7 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
   </div>
   <div class="hero__scrim"></div>
   <div class="hero__glow"></div>
+  <div class="hero__exit-scrim" aria-hidden="true"></div>
 
   <div class="hero__content container container--wide">
     <p class="eyebrow hero__eyebrow" data-reveal="fade">{hero.eyebrow}</p>
@@ -109,6 +110,11 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
     background:
       radial-gradient(64% 48% at 16% 80%, rgba(43,124,94,0.20), transparent 62%),
       radial-gradient(40% 30% at 84% 14%, rgba(198,161,91,0.07), transparent 70%);
+  }
+  /* Darkens as the scroll pulls the curtain down (GSAP scrubs opacity 0 → ~0.68) */
+  .hero__exit-scrim {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: #040a08; opacity: 0;
   }
 
   /* ---- Content: one rem/vh-scaled flow, deliberate rhythm ---- */
@@ -286,10 +292,19 @@ const wa = `https://wa.me/${contact.whatsappDigits}`;
   if (hero && video) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const saveData = (navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData;
+    // Phones/tablets play a dedicated lightweight encode (~1.2MB, 540p, 24s
+    // loop) instead of the 4-8MB desktop film — video everywhere, fast
+    // everywhere. Width alone misses landscape phones, so gate on coarse
+    // pointer too when picking the variant.
+    const isTouchOrNarrow =
+      matchMedia('(max-width: 900px)').matches || matchMedia('(pointer: coarse)').matches;
     if (!reduce && !saveData) {
       let any = false;
       video.querySelectorAll('source').forEach((s) => {
-        if (s.dataset.src) { s.src = s.dataset.src; any = true; }
+        if (s.dataset.src) {
+          s.src = isTouchOrNarrow ? s.dataset.src.replace('/hero.', '/hero-mobile.') : s.dataset.src;
+          any = true;
+        }
       });
       if (any) video.load();
       const play = () => { video.play().catch(() => {}); };

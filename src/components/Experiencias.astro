@@ -76,7 +76,13 @@ const imageMap: Record<string, ImageMetadata> = {
   }
   .exp__media-inner { position: absolute; inset: -8% 0; will-change: transform; }
   .exp__media .media-cover { transition: transform var(--dur-slow) var(--ease-expo); }
-  .exp__panel:hover .media-cover { transform: scale(1.05); }
+  @media (hover: hover) {
+    .exp__panel:hover .media-cover { transform: scale(1.05); }
+  }
+  /* Mobile: the zoom fires automatically when the media holds centre stage */
+  @media (max-width: 900px) {
+    .exp__media.is-focus .media-cover { transform: scale(1.05); }
+  }
   .exp__media-scrim {
     position: absolute; inset: 0; z-index: 1;
     background: linear-gradient(180deg, transparent 28%, rgba(6,14,11,0.96) 100%),

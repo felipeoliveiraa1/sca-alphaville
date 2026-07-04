@@ -24,7 +24,7 @@ import { about } from '../data/site';
   </div>
 
   <div class="container container--wide">
-    <figure class="eco__media" data-reveal="scale">
+    <figure class="eco__media" data-clip>
       <div class="eco__media-inner" data-parallax="0.1">
         <Image
           src={dreamCar}
@@ -49,7 +49,9 @@ import { about } from '../data/site';
   .eco__media { position: relative; margin-top: clamp(2.5rem, 6vw, 5rem); aspect-ratio: 16 / 7; overflow: clip; }
   .eco__media-inner { position: absolute; inset: -8% 0; will-change: transform; }
   .eco__media :global(img) { transition: transform var(--dur-slow) var(--ease-expo); }
-  .eco__media:hover :global(img) { transform: scale(1.04); }
+  @media (hover: hover) {
+    .eco__media:hover :global(img) { transform: scale(1.04); }
+  }
   .eco__frame { position: absolute; inset: 0; border: 1px solid var(--line-gold); pointer-events: none; }
   .eco__frame::before, .eco__frame::after {
     content: ''; position: absolute; width: 28px; height: 28px; border: 1px solid var(--gold);

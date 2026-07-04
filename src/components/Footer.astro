@@ -95,6 +95,8 @@ const year = 2026;
   }
   .footer__monument :global(svg) { width: 100%; height: auto; display: block; }
   .footer__monument:hover { color: rgba(231,207,149,0.30); }
+  /* Lit by the scroll: GSAP toggles this as the monument finishes rising */
+  .footer__monument.is-lit { color: rgba(231,207,149,0.30); }
 
   .footer__bottom {
     display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
