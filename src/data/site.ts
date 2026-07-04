@@ -48,12 +48,12 @@ export const hero = {
     'Onde a paixão por supercarros encontra o networking de alto nível. Não é apenas um clube. É um universo de possibilidades, exclusividade e conexões que movem negócios.',
   ctaPrimary: { label: 'Seja Membro', href: '#membro' },
   ctaSecondary: { label: 'Conheça o Ecossistema', href: '#ecossistema' },
-  marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '140+ Edições', '2.000+ Membros'],
+  marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '140+ Edições', '3.000+ Membros'],
 } as const;
 
 /** Faixa de credenciais logo abaixo do hero */
 export const trustStrip = [
-  { value: '2.000+', label: 'Membros ativos' },
+  { value: '3.000+', label: 'Membros ativos' },
   { value: '140+', label: 'Edições realizadas' },
   { value: '+12', label: 'Estados de atuação' },
   { value: '30+', label: 'Marcas parceiras' },
@@ -100,7 +100,7 @@ export const reach = {
   title: 'Nosso alcance vai muito além da velocidade.',
   lead: 'Conectando marcas e pessoas em uma escala sem precedentes.',
   stats: [
-    { value: 2000, suffix: '+', label: 'Membros ativos', note: 'Empresários, investidores e colecionadores' },
+    { value: 3000, suffix: '+', label: 'Membros ativos', note: 'Empresários, investidores e colecionadores' },
     { value: 12, prefix: '+', label: 'Estados no Brasil', note: 'Presença também nos EUA e Europa' },
     { value: 140, suffix: '+', label: 'Edições realizadas', note: 'Encontros, viagens e experiências' },
     { value: 30, suffix: '+', label: 'Marcas parceiras', note: 'Ecossistema de luxo e performance' },
