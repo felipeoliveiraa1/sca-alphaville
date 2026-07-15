@@ -18,6 +18,8 @@ const {
   description = 'Super Carros Alphaville, o ecossistema privado que une a paixão por supercarros ao networking de alto nível. Mais de 3.000 membros, 140+ edições, presença em 12 estados, EUA e Europa.',
 } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
+// WhatsApp/Telegram/LinkedIn exigem URL ABSOLUTA na og:image (relativa = card sem imagem)
+const ogImage = new URL('/og.jpg', Astro.site ?? 'https://supercarrosalphaville.com.br').href;
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -40,12 +42,17 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : As
     <meta property="og:site_name" content={brand.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content="/og.jpg" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Super Carros Alphaville · Experiência Além da Velocidade" />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="/og.jpg" />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Font preloads -->
     <link rel="preload" href="/fonts/clash-display-600.woff2" as="font" type="font/woff2" crossorigin />
