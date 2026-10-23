@@ -20,9 +20,9 @@ const imageMap: Record<string, ImageMetadata> = {
   <div class="container container--wide">
     <div class="exp__head">
       <p class="eyebrow" data-reveal="fade">Experiências</p>
-      <h2 class="exp__title" data-reveal data-split>Cada encontro é uma obra de curadoria.</h2>
+      <h2 class="exp__title" data-reveal data-split>Cada edição é uma obra de curadoria.</h2>
       <p class="exp__lead lead muted" data-reveal style="--reveal-delay:120ms">
-        Máquinas raras. Pessoas extraordinárias. Experiências irrepetíveis.
+        Carros raros. Pessoas extraordinárias. Experiências irrepetíveis.
       </p>
     </div>
   </div>
@@ -34,7 +34,7 @@ const imageMap: Record<string, ImageMetadata> = {
           <div class="exp__media-inner" data-parallax="0.1">
             <Image
               src={imageMap[e.image]}
-              alt={`Super Carros Alphaville · ${e.tag}, ${e.title}`}
+              alt={`Super Carros Alphaville · ${[e.tag, e.title].filter(Boolean).join(', ')}`}
               class="media-cover"
               widths={[640, 1024, 1600]}
               sizes="(max-width: 900px) 100vw, 60vw"
@@ -45,7 +45,7 @@ const imageMap: Record<string, ImageMetadata> = {
           <span class="exp__num">0{i + 1}</span>
         </div>
         <div class="exp__text" data-reveal>
-          <span class="exp__tag"><span class="facet" aria-hidden="true"></span>{e.tag}</span>
+          {e.tag && <span class="exp__tag"><span class="facet" aria-hidden="true"></span>{e.tag}</span>}
           <h3 class="exp__name">{e.title}</h3>
           <p class="exp__body">{e.body}</p>
         </div>

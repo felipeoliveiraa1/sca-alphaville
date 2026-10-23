@@ -32,8 +32,8 @@ import { reach, contact } from '../data/site';
     </div>
 
     <div class="reach__foot" data-reveal>
-      <span class="facet" aria-hidden="true"></span>
-      <span>Presença em {contact.locations}</span>
+      <span class="reach__foot-label"><span class="facet" aria-hidden="true"></span>Presença em</span>
+      <span class="reach__foot-places gold-text">{contact.locations}</span>
     </div>
   </div>
 </section>
@@ -80,11 +80,21 @@ import { reach, contact } from '../data/site';
   .reach__label { margin-top: 1rem; font-size: 1.05rem; color: var(--text-strong); font-weight: 500; letter-spacing: -0.01em; }
   .reach__note { margin-top: 0.4rem; font-size: 0.85rem; color: var(--text-dim); line-height: 1.45; max-width: 22ch; }
 
+  /* Global presence: the section's closing statement, set big in gold */
   .reach__foot {
-    display: flex; align-items: center; gap: 0.8rem; margin-top: clamp(2.5rem, 5vw, 4rem);
-    font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.6rem 1.6rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem); padding-block: clamp(1.4rem, 3vw, 2rem);
+    border-block: 1px solid var(--line-gold);
   }
-  .reach__foot .facet { color: var(--gold); }
+  .reach__foot-label {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    font-size: 0.82rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text);
+  }
+  .reach__foot-label .facet { color: var(--gold); }
+  .reach__foot-places {
+    font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; line-height: 1.05;
+    font-size: clamp(1.8rem, 1rem + 3vw, 3.6rem);
+  }
 
   @media (max-width: 1180px) {
     .reach__grid { grid-template-columns: 1fr 1fr; }

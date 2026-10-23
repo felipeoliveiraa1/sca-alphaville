@@ -47,13 +47,13 @@ export const hero = {
     'Onde a paixão por supercarros encontra o networking de alto nível. Não é apenas um clube. É um universo de possibilidades, exclusividade e conexões que movem negócios.',
   ctaPrimary: { label: 'Seja Membro', href: '#membro' },
   ctaSecondary: { label: 'Conheça o Ecossistema', href: '#ecossistema' },
-  marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '+148 Edições', '+3.000 Membros'],
+  marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '148 Edições', '+3.000 Membros'],
 } as const;
 
-/** Faixa de credenciais logo abaixo do hero ("+" sempre na frente do número) */
+/** Faixa de credenciais logo abaixo do hero ("+" na frente; 148 é o número exato de edições) */
 export const trustStrip = [
   { value: '+3.000', label: 'Membros ativos' },
-  { value: '+148', label: 'Edições realizadas' },
+  { value: '148', label: 'Edições realizadas' },
   { value: '+12', label: 'Estados de atuação' },
   { value: '+30', label: 'Marcas parceiras' },
 ] as const;
@@ -100,13 +100,15 @@ export const reach = {
   stats: [
     { value: 3000, prefix: '+', label: 'Membros ativos', note: 'Empresários, investidores e colecionadores' },
     { value: 12, prefix: '+', label: 'Estados no Brasil', note: 'Presença também nos EUA e Europa' },
-    { value: 148, prefix: '+', label: 'Edições realizadas', note: 'Encontros, viagens e experiências' },
+    { value: 148, label: 'Edições realizadas', note: 'Encontros, viagens e experiências' },
     { value: 30, prefix: '+', label: 'Marcas parceiras', note: 'Ecossistema de luxo e performance' },
   ],
 } as const;
 
-/** Experiências / formatos de evento */
-export const experiences = [
+/** Experiências / formatos de evento (tag é opcional: sem ela, só o título) */
+type Experience = { tag?: string; title: string; body: string; image: string };
+
+export const experiences: readonly Experience[] = [
   {
     tag: 'Aniversário de 4 anos',
     title: 'A edição dos 4 anos do SCA',
@@ -115,17 +117,15 @@ export const experiences = [
     image: 'event-4anos-venue',
   },
   {
-    tag: 'Track Day',
     title: 'Nosso track day',
     body:
       'Um registro do track day do SCA: membros acelerando os próprios carros na pista, com toda a estrutura do clube.',
     image: 'corvette-z06-track',
   },
   {
-    tag: 'Mega Encontros',
     title: 'Evento de São Roque',
     body:
-      'O aniversário do clube reuniu membros, famílias e parceiros no Complexo Dream Car Museum, em São Roque.',
+      'Um mega encontro em São Roque, reunindo membros, famílias e parceiros do clube.',
     image: 'aerial-saoroque',
   },
   {
@@ -137,12 +137,12 @@ export const experiences = [
   },
   {
     tag: 'No Limite',
-    title: 'O clube em movimento, no ápice da pista',
+    title: 'SCA Track Day',
     body:
       'Aventador SVJ, Huracán STO e uma matilha de esportivos traçando as curvas lado a lado. O som, a precisão e a emoção que só a pista entrega.',
     image: 'track-day-cornering',
   },
-] as const;
+];
 
 export const partners = {
   eyebrow: 'Ecossistema de Parcerias',
@@ -158,9 +158,9 @@ export const partners = {
     'Cobertura Digital',
   ],
   benefits: [
-    { title: 'Exposição & Ativação', body: 'Sua marca diante de um público de altíssimo poder aquisitivo.' },
-    { title: 'Sampling & Test Drives', body: 'Experiências e demonstrações em ambiente controlado e exclusivo.' },
-    { title: 'Cobertura Premium', body: 'Conteúdo digital de alto padrão registrando cada ativação.' },
+    { title: 'Sua marca em destaque', body: 'Exponha sua marca nos eventos do SCA, para empresários com alto poder de compra.' },
+    { title: 'Amostras e test drives', body: 'Deixe o público conhecer de perto o seu produto, com amostras, demonstrações e test drives.' },
+    { title: 'Divulgação nas redes', body: 'Sua participação aparece nas fotos e vídeos que o SCA publica nas redes sociais.' },
   ],
 } as const;
 
