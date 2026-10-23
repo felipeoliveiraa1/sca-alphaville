@@ -8,18 +8,28 @@ import Monogram from '../components/Monogram.astro';
 import Wordmark from '../components/Wordmark.astro';
 import { brand } from '../data/site';
 import { WORDMARK_PATH, WORDMARK_VIEWBOX } from '../lib/wordmark';
+import type { ComponentProps } from 'astro/types';
 
 interface Props {
   title?: string;
   description?: string;
+  /** public/ path of a 1200×630 JPG */
+  ogImagePath?: string;
+  ogImageAlt?: string;
+  nav?: ComponentProps<typeof Nav>;
+  footer?: ComponentProps<typeof Footer>;
 }
 const {
   title = `${brand.name} · ${brand.positioning}`,
   description = 'Super Carros Alphaville, o ecossistema privado que une a paixão por supercarros ao networking de alto nível. Mais de 3.000 membros, 140+ edições, presença em 12 estados, EUA e Europa.',
+  ogImagePath = '/og.jpg',
+  ogImageAlt = 'Super Carros Alphaville · Experiência Além da Velocidade',
+  nav,
+  footer,
 } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
 // WhatsApp/Telegram/LinkedIn exigem URL ABSOLUTA na og:image (relativa = card sem imagem)
-const ogImage = new URL('/og.jpg', Astro.site ?? 'https://www.supercarrosalphaville.com.br').href;
+const ogImage = new URL(ogImagePath, Astro.site ?? 'https://www.supercarrosalphaville.com.br').href;
 ---
 <!doctype html>
 <html lang="pt-BR">
@@ -47,7 +57,7 @@ const ogImage = new URL('/og.jpg', Astro.site ?? 'https://www.supercarrosalphavi
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Super Carros Alphaville · Experiência Além da Velocidade" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
@@ -109,11 +119,11 @@ const ogImage = new URL('/og.jpg', Astro.site ?? 'https://www.supercarrosalphavi
       <span class="facet" aria-hidden="true"></span>
     </button>
 
-    <Nav />
+    <Nav {...nav} />
     <main id="conteudo">
       <slot />
     </main>
-    <Footer />
+    <Footer {...footer} />
 
     <script>
       import { initMotion } from '../lib/motion';

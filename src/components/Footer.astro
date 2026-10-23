@@ -5,6 +5,23 @@ import venue from '../assets/images/event-4anos-venue.jpg';
 import { brand, contact, social, nav } from '../data/site';
 const wa = `https://wa.me/${contact.whatsappDigits}`;
 const year = 2026;
+// "Navegar" links are home anchors: on other pages (e.g. /media-kit) they must point back home
+const onHome = Astro.url.pathname.replace(/\/$/, '') === '';
+const homeAnchor = (href: string) => (onHome ? href : `/${href}`);
+
+/* Closing call-to-action. Defaults = membership (home); other pages pass their own. */
+interface Props {
+  cta?: { eyebrow: string; line1: string; line2: string; label: string; href: string };
+}
+const {
+  cta = {
+    eyebrow: 'Acesso por convite',
+    line1: 'Entre para o universo',
+    line2: 'Super Carros Alphaville.',
+    label: 'Falar no WhatsApp',
+    href: wa,
+  },
+} = Astro.props;
 ---
 <footer class="footer" id="contato">
   <div class="footer__bg" aria-hidden="true">
@@ -14,12 +31,12 @@ const year = 2026;
   </div>
   <div class="container--wide container">
     <div class="footer__cta" data-reveal>
-      <p class="eyebrow">Acesso por convite</p>
+      <p class="eyebrow">{cta.eyebrow}</p>
       <h2 class="footer__headline">
-        Entre para o universo<br /><span class="gold-text">Super Carros Alphaville.</span>
+        {cta.line1}<br /><span class="gold-text">{cta.line2}</span>
       </h2>
-      <a class="btn footer__btn" href={wa} target="_blank" rel="noopener" aria-label="Falar no WhatsApp (abre em nova aba)">
-        <span>Falar no WhatsApp</span><span class="btn__arrow" aria-hidden="true">→</span>
+      <a class="btn footer__btn" href={cta.href} target="_blank" rel="noopener" aria-label={`${cta.label} (abre em nova aba)`}>
+        <span>{cta.label}</span><span class="btn__arrow" aria-hidden="true">→</span>
       </a>
     </div>
 
@@ -36,7 +53,7 @@ const year = 2026;
 
       <div class="footer__col">
         <p class="footer__label">Navegar</p>
-        {nav.map((item) => <a class="footer__line link-underline" href={item.href}>{item.label}</a>)}
+        {nav.map((item) => <a class="footer__line link-underline" href={homeAnchor(item.href)}>{item.label}</a>)}
       </div>
 
       <div class="footer__col">

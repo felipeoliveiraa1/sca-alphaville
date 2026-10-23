@@ -192,6 +192,8 @@ function initHero(caps: Caps, ctx: gsap.Context) {
   const corner = hero.querySelector<HTMLElement>('.hero__corner');
   const exitScrim = hero.querySelector<HTMLElement>('.hero__exit-scrim');
   const items = [eyebrow, lead, actions, scroll, corner].filter(Boolean) as HTMLElement[];
+  // Scroll cue + corner label are optional (the /media-kit hero has neither)
+  const tail = [scroll, corner].filter(Boolean) as HTMLElement[];
 
   [...titleSpans, ...items].forEach((el) => (el.style.transition = 'none'));
   gsap.set(items, { autoAlpha: 0, y: 26, ...(caps.blur ? { filter: 'blur(8px)' } : {}) });
@@ -221,8 +223,8 @@ function initHero(caps: Caps, ctx: gsap.Context) {
     tl.to(eyebrow, { autoAlpha: 1, y: 0, ...un, duration: 0.9 }, 0.15)
       .fromTo(titleSpans, { yPercent: 120 }, { yPercent: 0, duration: 1.15, stagger: 0.12, immediateRender: true }, 0.28)
       .to(lead, { autoAlpha: 1, y: 0, ...un, duration: 0.9 }, 0.7)
-      .to(actions, { autoAlpha: 1, y: 0, ...un, duration: 0.9 }, 0.85)
-      .to([scroll, corner], { autoAlpha: 1, y: 0, ...un, duration: 0.8, stagger: 0.08 }, 1.05);
+      .to(actions, { autoAlpha: 1, y: 0, ...un, duration: 0.9 }, 0.85);
+    if (tail.length) tl.to(tail, { autoAlpha: 1, y: 0, ...un, duration: 0.8, stagger: 0.08 }, 1.05);
   };
 
   if ((window as unknown as { __scaPreloaded?: boolean }).__scaPreloaded) build();

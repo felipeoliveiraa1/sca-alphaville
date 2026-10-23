@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import Capa from '../components/media-kit/Capa.astro';
+import Sobre from '../components/media-kit/Sobre.astro';
+import Publico from '../components/media-kit/Publico.astro';
+import Stands from '../components/media-kit/Stands.astro';
+import Reserva from '../components/media-kit/Reserva.astro';
+import { event, mkNav, reserveCta, closingCta } from '../data/media-kit';
+---
+<Base
+  title={`Media Kit · ${event.name} ${event.edition} · Super Carros Alphaville`}
+  description={`Exponha sua marca no ${event.name} ${event.edition}, evento fechado do Super Carros Alphaville para empresários, investidores e colecionadores de supercarros. Conheça os formatos de stand e reserve o seu.`}
+  ogImagePath="/og-media-kit.jpg"
+  ogImageAlt={`Media Kit ${event.name} ${event.edition} · Stands para expositores`}
+  nav={{ links: mkNav, cta: { label: 'Reservar stand', href: reserveCta.href }, brandHref: '/' }}
+  footer={{ cta: closingCta }}
+>
+  <Capa />
+  <Sobre />
+  <Publico />
+  <Stands />
+  <Reserva />
+</Base>
