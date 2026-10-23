@@ -1,0 +1,56 @@
+---
+import Pagina from './Pagina.astro';
+import { ecossistema } from '../../data/media-kit';
+
+interface Props { n: number; total: number; }
+const { n, total } = Astro.props;
+const ptBR = (x: number) => x.toLocaleString('pt-BR');
+---
+<Pagina page={ecossistema.page} n={n} total={total} variant="statement">
+  <!-- Static figures on purpose: the site's scrubbed counters only land once the stat
+       scrolls to mid-screen, which a bottom-anchored page never guarantees -->
+  <div class="eco-stats">
+    {ecossistema.stats.map((s, i) => (
+      <div class="eco-stats__item" data-reveal style={`--reveal-delay:${260 + i * 90}ms`}>
+        <div class="eco-stats__numline">
+          {s.prefix && <span class="eco-stats__affix">{s.prefix}</span>}
+          <span class="eco-stats__num">{ptBR(s.value)}</span>
+        </div>
+        <p class="eco-stats__label">{s.label}</p>
+      </div>
+    ))}
+  </div>
+</Pagina>
+
+<style>
+  .eco-stats {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: clamp(2.4rem, 6vh, 4rem); max-width: 60rem;
+    border-top: 1px solid var(--line-strong);
+  }
+  .eco-stats__item { padding: clamp(1.4rem, 3vh, 2rem) clamp(1rem, 2.4vw, 2.4rem) 0 0; }
+  .eco-stats__item + .eco-stats__item { padding-left: clamp(1rem, 2.4vw, 2.4rem); border-left: 1px solid var(--line-strong); }
+  .eco-stats__numline { display: flex; align-items: flex-start; line-height: 0.9; }
+  .eco-stats__num {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(2.8rem, 1rem + 5.4vw, 6.4rem); letter-spacing: -0.045em;
+    background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .eco-stats__affix {
+    font-family: var(--font-display); font-weight: 500; color: var(--gold);
+    font-size: clamp(1.4rem, 0.8rem + 2.4vw, 3rem); padding-top: 0.12em;
+  }
+  .eco-stats__label {
+    margin-top: 0.9rem; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text);
+  }
+
+  @media (max-width: 560px) {
+    .eco-stats { grid-template-columns: 0.8fr 0.7fr 1.5fr; }  /* "3.000+" needs the room */
+    .eco-stats__item { padding-right: 0.6rem; }
+    .eco-stats__item + .eco-stats__item { padding-left: 0.8rem; }
+    .eco-stats__num { font-size: 2.1rem; }
+    .eco-stats__affix { font-size: 1.1rem; }
+    .eco-stats__label { font-size: 0.66rem; letter-spacing: 0.12em; }
+  }
+</style>

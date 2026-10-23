@@ -1,23 +1,35 @@
 ---
 import Base from '../layouts/Base.astro';
 import Capa from '../components/media-kit/Capa.astro';
-import Sobre from '../components/media-kit/Sobre.astro';
-import Publico from '../components/media-kit/Publico.astro';
-import Stands from '../components/media-kit/Stands.astro';
-import Reserva from '../components/media-kit/Reserva.astro';
-import { event, mkNav, reserveCta, closingCta } from '../data/media-kit';
+import Ecossistema from '../components/media-kit/Ecossistema.astro';
+import Pagina from '../components/media-kit/Pagina.astro';
+import Programacao from '../components/media-kit/Programacao.astro';
+import Planos from '../components/media-kit/Planos.astro';
+import { event, mkNav, reserveCta, closingCta, vip, setores } from '../data/media-kit';
+
+// Read like a PDF: cover, ecosystem, VIP arena, index, then every sector page, numbered.
+const sectorPages = setores.flatMap((setor) => setor.pages.map((page) => ({ setor, page })));
+const first = 5;
+const total = first - 1 + sectorPages.length;
+const pad = (x: number) => String(x).padStart(2, '0');
 ---
 <Base
   title={`Media Kit · ${event.name} ${event.edition} · Super Carros Alphaville`}
-  description={`Exponha sua marca no ${event.name} ${event.edition}, evento fechado do Super Carros Alphaville para empresários, investidores e colecionadores de supercarros. Conheça os formatos de stand e reserve o seu.`}
+  description={`${event.name}, ${event.edition} do Super Carros Alphaville: ${event.date.toLowerCase()} na fazenda em Tatuí (SP). Track day, mais de 100 stands, Arena Business, DJ Jesus Luz, aeronaves, drift e muito mais. Reserve o seu stand.`}
   ogImagePath="/og-media-kit.jpg"
-  ogImageAlt={`Media Kit ${event.name} ${event.edition} · Stands para expositores`}
+  ogImageAlt={`Media Kit ${event.name} · ${event.edition} · Fazenda em Tatuí`}
   nav={{ links: mkNav, cta: { label: 'Reservar stand', href: reserveCta.href }, brandHref: '/' }}
   footer={{ cta: closingCta }}
 >
   <Capa />
-  <Sobre />
-  <Publico />
-  <Stands />
-  <Reserva />
+  <Ecossistema n={2} total={total} />
+  <Pagina page={vip} n={3} total={total} />
+  <Programacao n={4} total={total} />
+  {sectorPages.map(({ setor, page }, i) =>
+    page === 'planos' ? (
+      <Planos n={first + i} total={total} />
+    ) : (
+      <Pagina page={page} n={first + i} total={total} ghost={page.mega ? undefined : pad(setor.n)} />
+    ),
+  )}
 </Base>

@@ -1,0 +1,61 @@
+---
+/* The table of contents: every sector, linking to its first page */
+import Pagina from './Pagina.astro';
+import { programacao, setores } from '../../data/media-kit';
+
+interface Props { n: number; total: number; }
+const { n, total } = Astro.props;
+const pad = (x: number) => String(x).padStart(2, '0');
+const firstId = (s: (typeof setores)[number]) => {
+  const p = s.pages[0];
+  return p === 'planos' ? 'planos' : p.id;
+};
+---
+<Pagina page={programacao} n={n} total={total} variant="plain">
+  <ol class="toc" data-stagger="45">
+    {setores.map((s) => (
+      <li>
+        <a class="toc__row" href={`#${firstId(s)}`}>
+          <span class="toc__n">{pad(s.n)}</span>
+          <span class="toc__text">
+            <span class="toc__name">{s.name}</span>
+            <span class="toc__sum">{s.summary}</span>
+          </span>
+          <span class="toc__arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</Pagina>
+
+<style>
+  .toc {
+    list-style: none; padding: 0;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(2rem, 5vw, 5rem);
+    margin-top: clamp(2.4rem, 6vh, 4rem);
+  }
+  .toc__row {
+    display: grid; grid-template-columns: 3rem 1fr auto; align-items: center; gap: 1rem;
+    padding-block: clamp(1rem, 2.2vh, 1.4rem);
+    border-bottom: 1px solid var(--line);
+    transition: border-color var(--dur-fast), padding-left var(--dur-mid) var(--ease-expo);
+  }
+  .toc__n { font-family: var(--font-display); font-size: 0.95rem; color: var(--gold); letter-spacing: 0.08em; }
+  .toc__text { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+  .toc__name {
+    font-family: var(--font-display); font-weight: 500; color: var(--text-strong);
+    font-size: clamp(1.15rem, 0.9rem + 0.8vw, 1.6rem); letter-spacing: -0.015em; line-height: 1.15;
+    transition: color var(--dur-fast);
+  }
+  .toc__sum { font-size: 0.9rem; color: var(--text-muted); }
+  .toc__arrow { color: var(--gold); opacity: 0.5; transition: opacity var(--dur-fast), transform var(--dur-mid) var(--ease-expo); }
+  @media (hover: hover) {
+    .toc__row:hover { border-color: var(--line-gold); padding-left: 0.8rem; }
+    .toc__row:hover .toc__name { color: var(--gold-bright); }
+    .toc__row:hover .toc__arrow { opacity: 1; transform: translateX(0.3rem); }
+  }
+
+  @media (max-width: 860px) {
+    .toc { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,215 @@
+---
+/* One full-screen "PDF page" of the media kit: big art, sector label, page counter. */
+import { Image, getImage } from 'astro:assets';
+import type { Pagina } from '../../data/media-kit';
+import { resolveImage, widthsFor } from '../../lib/media-kit-images';
+
+interface Props {
+  page: Pagina;
+  n: number;
+  total: number;
+  /** statement: long mixed-case title · plain: no art, content-led page (index, stand tiers) */
+  variant?: 'default' | 'statement' | 'plain';
+  /** outline numeral behind a page that has no art yet (its sector number) */
+  ghost?: string;
+}
+const { page, n, total, variant = 'default', ghost } = Astro.props;
+const img = variant === 'plain' ? undefined : resolveImage(page.image, page.fallback);
+// a portrait cut for phones is picked up by name: "<image>-mobile"
+const imgMobile = img ? resolveImage(page.imageMobile ?? (page.image && `${page.image}-mobile`)) : undefined;
+const mobileSet = imgMobile
+  ? await getImage({ src: imgMobile, widths: widthsFor(imgMobile, [480, 768]), format: 'webp' })
+  : undefined;
+const pad = (x: number) => String(x).padStart(2, '0');
+---
+<section
+  class:list={['pg', `pg--${variant}`, img ? 'pg--art' : variant !== 'plain' && 'pg--type', page.copyAt === 'top' && 'pg--top']}
+  id={page.id}
+>
+  {variant !== 'plain' && (
+    <div class="pg__media" data-parallax="0.08" aria-hidden={img ? undefined : 'true'}>
+      {img ? (
+        <picture>
+          {mobileSet && <source media="(max-width: 760px)" srcset={mobileSet.srcSet.attribute} sizes="100vw" />}
+          <Image
+            src={img}
+            alt={page.imageAlt ?? ''}
+            class="media-cover"
+            widths={widthsFor(img)}
+            sizes="100vw"
+            quality={78}
+            loading="lazy"
+            style={page.position ? `object-position:${page.position}` : undefined}
+          />
+        </picture>
+      ) : (
+        ghost && <span class="pg__ghost">{ghost}</span>
+      )}
+    </div>
+  )}
+  <div class="pg__scrim" aria-hidden="true"></div>
+
+  <div class="pg__bar container container--wide">
+    <p class="pg__label"><span class="facet" aria-hidden="true"></span>{page.label}</p>
+    <span class="pg__count" aria-hidden="true">{pad(n)}<i>/</i>{pad(total)}</span>
+  </div>
+
+  <div class="pg__body container container--wide">
+    <div class="pg__copy">
+      {page.badge && <p class="pg__badge" data-reveal="fade">{page.badge}</p>}
+      {page.mega && <p class="pg__mega" data-reveal>{page.mega}</p>}
+      <h2 class="pg__title" data-reveal data-split>{page.title}</h2>
+      {page.accent && <p class="pg__accent" data-reveal style="--reveal-delay:100ms">{page.accent}</p>}
+      {page.lead && <p class="pg__lead" data-reveal style="--reveal-delay:160ms">{page.lead}</p>}
+      {page.chips && (
+        <ul class="pg__chips">
+          {page.chips.map((c, i) => <li data-reveal style={`--reveal-delay:${220 + i * 60}ms`}>{c}</li>)}
+        </ul>
+      )}
+      {page.cta && (
+        <div class="pg__cta" data-reveal style="--reveal-delay:220ms">
+          <a class="btn" href={page.cta.href}>
+            <span>{page.cta.label}</span><span class="btn__arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      )}
+    </div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .pg {
+    position: relative; overflow: clip; isolation: isolate;
+    min-height: 100svh;
+    display: flex; flex-direction: column;
+  }
+
+  /* ---- Art layer ---- */
+  .pg__media { position: absolute; inset: -8% 0; z-index: -2; will-change: transform; }
+  .pg__scrim { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+  .pg--art .pg__scrim {
+    background:
+      linear-gradient(180deg, rgba(6,14,11,0.66) 0%, rgba(6,14,11,0) 24%, rgba(6,14,11,0) 40%, rgba(6,14,11,0.84) 74%, rgba(6,14,11,0.98) 100%),
+      linear-gradient(90deg, rgba(6,14,11,0.72) 0%, rgba(6,14,11,0.18) 55%, rgba(6,14,11,0) 80%);
+  }
+
+  /* No art yet: a typographic page (emerald depth + the sector number in gold outline) */
+  .pg--type .pg__media {
+    background:
+      radial-gradient(60% 70% at 80% 32%, rgba(43,124,94,0.30), transparent 66%),
+      radial-gradient(45% 45% at 12% 92%, rgba(198,161,91,0.10), transparent 70%),
+      linear-gradient(180deg, var(--bg-1), var(--bg));
+  }
+  .pg--type .pg__scrim { background: linear-gradient(180deg, transparent 55%, rgba(6,14,11,0.85)); }
+  .pg__ghost {
+    position: absolute; right: -0.06em; top: 50%; transform: translateY(-58%);
+    font-family: var(--font-display); font-weight: 600; text-transform: uppercase;
+    font-size: clamp(9rem, 2rem + 30vw, 34rem); line-height: 0.8; letter-spacing: -0.05em;
+    color: transparent; -webkit-text-stroke: 1px rgba(198,161,91,0.30);
+    white-space: nowrap; user-select: none;
+  }
+
+  .pg--plain {
+    background:
+      radial-gradient(55% 45% at 50% 0%, rgba(43,124,94,0.14), transparent 70%),
+      radial-gradient(40% 30% at 90% 100%, rgba(198,161,91,0.06), transparent 70%);
+    border-top: 1px solid var(--line);
+  }
+
+  /* ---- Page chrome: sector label + PDF-style counter ---- */
+  .pg__bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding-top: clamp(6.2rem, 13vh, 8rem);
+  }
+  .pg__label {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    font-size: var(--fs-eyebrow); font-weight: 500; letter-spacing: var(--track-label);
+    text-transform: uppercase; color: var(--gold-bright);
+  }
+  .pg__label .facet { color: var(--gold); flex: none; }
+  .pg__count {
+    font-family: var(--font-display); font-weight: 500; font-size: 0.95rem; letter-spacing: 0.06em;
+    color: var(--text); font-variant-numeric: tabular-nums;
+  }
+  .pg__count i { font-style: normal; color: var(--text-dim); margin-inline: 0.4em; }
+
+  /* ---- Copy: anchored low, like a cover line ---- */
+  .pg__body {
+    flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
+    padding-top: clamp(2rem, 6vh, 4rem); padding-bottom: clamp(3rem, 9vh, 6.5rem);
+  }
+  .pg--plain .pg__body, .pg--top .pg__body { justify-content: flex-start; }
+  .pg--art.pg--top .pg__scrim {
+    background:
+      linear-gradient(180deg, rgba(6,14,11,0.94) 0%, rgba(6,14,11,0.78) 34%, rgba(6,14,11,0) 62%, rgba(6,14,11,0.4) 100%),
+      linear-gradient(90deg, rgba(6,14,11,0.55) 0%, rgba(6,14,11,0) 60%);
+  }
+  .pg__copy { max-width: 60rem; }
+
+  .pg__badge {
+    display: inline-block; margin-bottom: 1.4rem;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    background: var(--gold-grad); color: #1a1407; padding: 0.55em 1.1em;
+  }
+  .pg__mega {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(5rem, 1.5rem + 14vw, 15rem); line-height: 0.82; letter-spacing: -0.05em;
+    background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin-bottom: 0.12em; padding-right: 0.05em;
+  }
+  .pg__title {
+    font-weight: 600; text-transform: uppercase;
+    font-size: clamp(2.6rem, 0.8rem + 6vw, 7rem); line-height: 0.94; letter-spacing: -0.035em;
+    word-spacing: 0.08em;
+    max-width: 14ch;
+  }
+  .pg--statement .pg__title, .pg--plain .pg__title {
+    text-transform: none; letter-spacing: -0.025em; word-spacing: 0.06em;
+    font-size: clamp(2rem, 0.9rem + 3.6vw, 4.8rem); line-height: 1.04; max-width: 21ch;
+  }
+  .pg__accent {
+    margin-top: 0.7rem;
+    font-family: var(--font-serif); font-style: italic; color: var(--gold);
+    font-size: clamp(1.5rem, 0.9rem + 2.2vw, 3rem); line-height: 1.1; letter-spacing: -0.01em;
+  }
+  .pg__lead {
+    margin-top: 1.4rem; max-width: 46ch;
+    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.4rem); line-height: 1.5; color: var(--text);
+    text-wrap: pretty;
+  }
+  .pg__chips { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-top: 1.8rem; max-width: 52rem; }
+  .pg__chips li {
+    font-size: 0.74rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 0.6em 1em; color: var(--text);
+    border: 1px solid rgba(236,233,225,0.24); background: rgba(6,14,11,0.55);
+  }
+  .pg__cta { margin-top: 2.2rem; }
+
+  @media (max-width: 760px) {
+    .pg__bar { padding-top: 5.4rem; }
+    .pg__label { font-size: 0.68rem; letter-spacing: 0.18em; }
+    .pg__count { font-size: 0.82rem; }
+    .pg__title { font-size: clamp(2.3rem, 11vw, 3.6rem); max-width: none; }
+    .pg__mega { font-size: clamp(4.6rem, 27vw, 8rem); }
+    .pg--art .pg__scrim {
+      background: linear-gradient(180deg, rgba(6,14,11,0.7) 0%, rgba(6,14,11,0) 22%, rgba(6,14,11,0.1) 42%, rgba(6,14,11,0.9) 72%, rgba(6,14,11,0.98) 100%);
+    }
+    .pg__ghost { font-size: clamp(9rem, 62vw, 20rem); top: 38%; }
+  }
+</style>
+
+<script>
+  // Copy sits low on a full-screen page, where per-element triggers ('top 88%') may never
+  // fire if the reader stops with the page in frame: reveal a page's copy together once
+  // a third of it is on screen.
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      e.target.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-in'));
+      io.unobserve(e.target);
+    }),
+    { threshold: 0.35 },
+  );
+  document.querySelectorAll('.pg').forEach((pg) => io.observe(pg));
+</script>

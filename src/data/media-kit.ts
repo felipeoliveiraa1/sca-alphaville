@@ -1,11 +1,12 @@
 /**
- * SCA — Media Kit de expositores (/media-kit)
- * Conteúdo da página de venda de stands do SCA Country · 3ª Edição (PT-BR).
- * Números do clube (membros, edições, estados, marcas) vêm de site.ts: atualize lá.
+ * SCA — Media Kit do SCA Country · 148ª Edição (/media-kit)
+ * Roteiro do José (áudios de 23/10/2026): uma página corrida, estilo PDF, com uma
+ * imagem grande por página: capa, ecossistema, Arena VIP e os 11 setores do evento.
  *
- * ⚠ RASCUNHO COMERCIAL: tudo marcado com "CONFIRMAR" (data, local, metragens,
- * o que cada stand inclui, valores) precisa ser validado com o SCA antes de divulgar.
- * Campos `null` aparecem como "Em breve" / "Sob consulta" na página.
+ * IMAGENS: cada página procura src/assets/images/media-kit/<image>.(jpg|png|webp).
+ * Sem o arquivo, usa `fallback` (foto real do site) ou vira uma página tipográfica.
+ *
+ * ⚠ CONFIRMAR: mês do evento; metragens, entregas e valores dos stands.
  */
 import { contact } from './site';
 
@@ -15,67 +16,84 @@ export const waMessage = (text: string) =>
 
 export const event = {
   name: 'SCA Country',
-  edition: '3ª Edição',
-  date: null as string | null,   // CONFIRMAR, ex.: '15 de novembro de 2026'
-  venue: null as string | null,  // CONFIRMAR, ex.: 'Circuito de São Roque · SP'
-  access: 'Fechado · membros e parceiros',
+  edition: '148ª edição',
+  place: 'Fazenda em Tatuí · SP',
+  date: 'Dias 21 e 22',  // CONFIRMAR o mês (21–22/nov/2026 cai num sábado e domingo)
+  hours: 'A partir das 9h · sem hora para terminar',
 } as const;
 
 export const mkNav = [
-  { label: 'O SCA', href: '#sca' },
-  { label: 'Público', href: '#publico' },
+  { label: 'Ecossistema', href: '#ecossistema' },
+  { label: 'Programação', href: '#programacao' },
   { label: 'Stands', href: '#stands' },
-  { label: 'Como reservar', href: '#reserva' },
+  { label: 'Contato', href: '#contato' },
 ] as const;
 
 export const reserveCta = {
   label: 'Reservar meu stand',
-  href: waMessage(`Olá! Quero expor no ${event.name} ${event.edition}. Pode me enviar valores e disponibilidade dos stands?`),
+  href: waMessage(`Olá! Quero expor no ${event.name} (${event.edition}). Pode me enviar valores e disponibilidade dos stands?`),
 } as const;
+
+/** Uma página do media kit (imagem grande + texto). */
+export type Pagina = {
+  id: string;
+  label: string;
+  title: string;
+  accent?: string;                 // linha dourada em serifa
+  mega?: string;                   // palavra/número gigante (VIP, +100, 5 mil)
+  badge?: string;
+  lead?: string;
+  chips?: readonly string[];
+  image?: string;                  // nome do arquivo em assets/images/media-kit
+  imageMobile?: string;            // versão vertical p/ celular (padrão: "<image>-mobile", se existir)
+  fallback?: string;               // foto real do site enquanto a imagem final não chega
+  imageAlt?: string;
+  position?: string;               // object-position da imagem
+  copyAt?: 'top';                  // texto no alto quando o assunto da imagem está embaixo
+  cta?: { label: string; href: string };
+};
 
 export const capa = {
   eyebrow: 'Media Kit · Expositores',
-  titleLines: ['Sua marca', 'na pista', 'do SCA Country'],
-  lead:
-    'A 3ª edição do SCA Country abre espaço para marcas que querem estar frente a frente com empresários, investidores e colecionadores de supercarros, em um evento fechado, só para membros, famílias e parceiros.',
-  ctaSecondary: { label: 'Ver os stands', href: '#stands' },
-  posterAlt: 'Arte oficial do SCA Country 3ª Edição: supercarros em formação numa pista cercada de montanhas ao pôr do sol',
+  titleLines: ['SCA Country', event.edition],
+  image: 'capa',
+  imageAlt: 'Supercarros alinhados ao lado da pista, público, tendas do SCA e um helicóptero no heliponto',
+  ctaSecondary: { label: 'Ver a programação', href: '#programacao' },
 } as const;
 
-export const sobre = {
-  eyebrow: 'Quem somos',
-  title: 'O maior ecossistema de empresários do mundo.',
-  gallery: [
-    { image: 'aerial-saoroque', caption: 'Mega encontro · São Roque', alt: 'Vista aérea de centenas de supercarros reunidos em um encontro do SCA em São Roque' },
-    { image: 'dream-car-event', caption: 'Comunidade SCA · Dream Car', alt: 'Membros do SCA circulando entre supercarros no evento Dream Car' },
-    { image: 'track-day-cornering', caption: 'Track day · O clube na pista', alt: 'Lamborghinis e esportivos do SCA contornando uma curva durante um track day' },
+export const ecossistema = {
+  page: {
+    id: 'ecossistema',
+    label: 'Ecossistema SCA',
+    title: 'A SCA Super Carros Alphaville está em 12 estados do Brasil e em 7 países.',
+    lead: 'São mais de 3 mil empresários proprietários de carros superesportivos. Um ecossistema com os maiores empresários do país.',
+    image: 'ecossistema',
+    fallback: 'dream-car-event',
+    imageAlt: 'Membros do SCA circulando entre supercarros em um encontro do clube',
+  } satisfies Pagina,
+  stats: [
+    { value: 12, label: 'Estados no Brasil' },
+    { value: 7, label: 'Países' },
+    { value: 3000, prefix: '+', label: 'Empresários' },
   ],
-} as const;
+};
 
-export const publico = {
-  eyebrow: 'O público',
-  title: 'Quem passa pelo seu stand decide.',
-  lead:
-    'Os eventos do SCA não são abertos ao público. Cada visitante é membro do clube, familiar ou convidado de uma empresa parceira.',
-  profiles: [
-    {
-      title: 'Empresários & investidores',
-      body: 'Donos de negócio e investidores que fazem do clube uma plataforma de relacionamento e de novos negócios.',
-    },
-    {
-      title: 'Colecionadores de supercarros',
-      body: 'Proprietários de esportivos e superesportivos, exigentes com performance, exclusividade e atendimento.',
-    },
-    {
-      title: 'Famílias de alto padrão',
-      body: 'Os eventos recebem as famílias dos membros: decisões de consumo que vão do carro à casa, da viagem à saúde.',
-    },
-    {
-      title: 'Influenciadores do setor',
-      body: 'Criadores e personalidades do universo automotivo que levam cada ativação para muito além do evento.',
-    },
-  ],
-} as const;
+export const vip: Pagina = {
+  id: 'vip',
+  label: 'Exclusivo para membros',
+  mega: 'VIP',
+  title: 'Arena SCA Member',
+  lead: 'Uma arena exclusiva para os membros do SCA. Os maiores empresários do país estarão lá dentro, com presenças já confirmadas.',
+  image: 'arena-vip',
+};
+
+export const programacao = {
+  id: 'programacao',
+  label: 'Programação',
+  title: 'Dois dias, onze setores e sem hora para terminar.',
+};
+
+/* ---------------- Stands (Setor 02) ---------------- */
 
 export type StandTier = {
   name: string;
@@ -87,10 +105,10 @@ export type StandTier = {
   recommended?: boolean;
 };
 
-// CONFIRMAR: nomes, metragens, entregas e valores abaixo são uma proposta inicial.
+// CONFIRMAR: metragens, entregas e valores abaixo são uma proposta inicial.
 const tiers: StandTier[] = [
   {
-    name: 'Paddock',
+    name: 'Prata',
     width: 3,
     depth: 3,
     pitch: 'Presença essencial para apresentar a marca e gerar contatos qualificados.',
@@ -102,7 +120,7 @@ const tiers: StandTier[] = [
     price: null,
   },
   {
-    name: 'Grid',
+    name: 'Ouro',
     width: 6,
     depth: 3,
     pitch: 'O dobro de frente para demonstrações, atendimento e ativação de produto.',
@@ -116,7 +134,7 @@ const tiers: StandTier[] = [
     recommended: true,
   },
   {
-    name: 'Pole Position',
+    name: 'Diamante',
     width: 10,
     depth: 6,
     pitch: 'Área nobre, com espaço para veículo em exposição e ativação completa.',
@@ -131,30 +149,220 @@ const tiers: StandTier[] = [
   },
 ];
 
-export const stands = {
-  eyebrow: 'Stands',
-  title: 'Escolha o seu lugar no grid.',
-  lead:
-    'Três formatos para três níveis de presença, do primeiro contato à ativação completa da marca. As vagas são limitadas.',
-  benefits: [
-    { title: 'Contato direto', body: 'Conversa olho no olho com quem decide, sem a dispersão de um evento aberto.' },
-    { title: 'Ativação & test drive', body: 'Demonstrações, sampling e test drives em ambiente controlado e exclusivo.' },
-    { title: 'Cobertura digital', body: 'Conteúdo de alto padrão nas redes do SCA registrando o evento e as marcas presentes.' },
-  ],
+export const planos = {
+  page: {
+    id: 'planos',
+    label: 'Setor 02 · Stands',
+    title: 'Prata, Ouro ou Diamante.',
+    lead: 'Três categorias de stand para três níveis de presença no SCA Country.',
+  } satisfies Pagina,
   tiers,
   fine: 'Metragens, entregas e valores finais constam na proposta comercial enviada na reserva.',
-} as const;
+};
 
-export const reserva = {
-  eyebrow: 'Como reservar',
-  title: 'Do primeiro contato ao dia do evento.',
-  steps: [
-    { title: 'Escolha o formato', body: 'Paddock, Grid ou Pole Position, conforme a ativação que a sua marca quer fazer.' },
-    { title: 'Fale com o comercial', body: 'Pelo WhatsApp, a equipe do SCA envia a proposta com valores e disponibilidade.' },
-    { title: 'Garanta o espaço', body: 'Com a proposta aceita, o seu stand fica reservado para o evento.' },
-    { title: 'Ative a sua marca', body: 'No dia, é montar, receber os membros e fazer negócio.' },
-  ],
-} as const;
+/* ---------------- Setores (ordem e números ditados pelo José) ---------------- */
+
+export type Setor = {
+  n: number;
+  name: string;
+  summary: string;
+  /** páginas do setor; 'planos' = página das categorias de stand */
+  pages: readonly (Pagina | 'planos')[];
+};
+
+export const setores: Setor[] = [
+  {
+    n: 1,
+    name: 'Track Day',
+    summary: 'Supercarros de todas as marcas na pista.',
+    pages: [
+      {
+        id: 'setor-01',
+        label: 'Setor 01 · Programação',
+        title: 'Track Day',
+        lead: 'Supercarros de todas as marcas acelerando na pista do SCA Country.',
+        chips: ['Porsche', 'Ferrari', 'Lamborghini', 'BMW M', 'Audi R8 & RS', 'Mustang'],
+        image: 'setor-01-track-day',
+        fallback: 'fleet-formation-saoroque',
+        imageAlt: 'Supercarros de várias marcas em formação na pista',
+      },
+      {
+        id: 'pista',
+        label: 'Setor 01 · A pista',
+        title: 'A pista',
+        accent: 'Um campo de provas completo.',
+        lead: 'Uma estrutura inteira de pistas em plena fazenda, em Tatuí.',
+        chips: ['Pista oval', 'Slalom', 'Baixo atrito', 'Off-road', 'Rampa 20%'],
+        image: 'setor-01-pista',
+        imageAlt: 'Vista aérea do campo de provas em Tatuí, com a pista oval cercada por plantações',
+        position: '100% 50%',  // na foto vertical (celular) a curva oval fica à direita
+        copyAt: 'top',         // e na base das duas fotos
+      },
+    ],
+  },
+  {
+    n: 2,
+    name: 'Stands',
+    summary: 'Mais de 100 empresas expondo.',
+    pages: [
+      {
+        id: 'stands',
+        label: 'Setor 02 · Stands',
+        mega: '+100',
+        title: 'Stands de empresas',
+        lead: 'Uma feira dentro do evento, com mais de 100 empresas expondo. Seja uma empresa parceira e monte o seu stand.',
+        image: 'setor-02-stands',
+        cta: { label: 'Escolher meu stand', href: '#planos' },
+      },
+      'planos',
+      {
+        id: 'stand-sca',
+        label: 'Setor 02 · Stand oficial',
+        title: 'Loja oficial SCA',
+        lead: 'O stand da marca SCA, com malas, bonés, camisas, moletons e toda a linha oficial do clube.',
+        image: 'setor-02-stand-sca',
+      },
+    ],
+  },
+  {
+    n: 3,
+    name: 'Gastronomia',
+    summary: 'Food trucks e costela fogo de chão.',
+    pages: [
+      {
+        id: 'setor-03',
+        label: 'Setor 03 · Gastronomia',
+        title: 'Praça de alimentação',
+        accent: 'Costela fogo de chão.',
+        lead: 'Food trucks, sorvetes e o melhor da comida de fazenda, com os supercarros em volta.',
+        image: 'setor-03-gastronomia',
+      },
+    ],
+  },
+  {
+    n: 4,
+    name: 'Arena Business',
+    summary: 'Networking e a sua empresa no telão.',
+    pages: [
+      {
+        id: 'setor-04',
+        label: 'Setor 04 · Negócios',
+        title: 'Arena Business',
+        lead: 'O espaço para empresários se conectarem e fazerem negócios. No telão da arena, a empresa de cada empresário aparece para todos os presentes.',
+        image: 'setor-04-arena-business',
+      },
+    ],
+  },
+  {
+    n: 5,
+    name: 'DJ Jesus Luz',
+    summary: 'Presença confirmada nos dois dias.',
+    pages: [
+      {
+        id: 'setor-05',
+        label: 'Setor 05 · Atração',
+        badge: 'Presença confirmada',
+        title: 'DJ Jesus Luz',
+        lead: 'Nos dois dias de SCA Country, ao lado de José Silva, fundador do SCA.',
+        image: 'setor-05-dj',
+      },
+    ],
+  },
+  {
+    n: 6,
+    name: 'Aeronaves',
+    summary: 'Helicópteros e aviões em exposição.',
+    pages: [
+      {
+        id: 'setor-06',
+        label: 'Setor 06 · Aeronaves',
+        title: 'Aeronaves',
+        lead: 'Helicópteros e aviões de pequeno porte reunidos em um setor próprio: o SCA Country também chega pelo céu.',
+        image: 'setor-06-aeronaves',
+      },
+    ],
+  },
+  {
+    n: 7,
+    name: 'Show de Drift',
+    summary: 'Os maiores pilotos do Brasil.',
+    pages: [
+      {
+        id: 'setor-07',
+        label: 'Setor 07 · Show',
+        title: 'Show de Drift',
+        lead: 'Apresentação de drift com os maiores pilotos do Brasil.',
+        image: 'setor-07-drift',
+        fallback: 'track-day-cornering',
+        imageAlt: 'Supercarros contornando uma curva da pista',
+      },
+    ],
+  },
+  {
+    n: 8,
+    name: 'Volta Rápida',
+    summary: 'Os carros mais exclusivos do Brasil.',
+    pages: [
+      {
+        id: 'setor-08',
+        label: 'Setor 08 · Experiência',
+        title: 'Volta Rápida',
+        lead: 'Uma volta na pista a bordo dos carros mais exclusivos do Brasil.',
+        chips: ['Lamborghini Aventador', 'Toyota Supra', 'Nissan Skyline GT-R', 'Mitsubishi Evo', 'Nissan 370Z & 350Z Nismo'],
+        image: 'setor-08-volta-rapida',
+        fallback: 'lambo-forest-aventador',
+        imageAlt: 'Lamborghini Aventador com os faróis acesos',
+      },
+    ],
+  },
+  {
+    n: 9,
+    name: 'SCA Podcast ao vivo',
+    summary: 'Entrevistas com os maiores empresários.',
+    pages: [
+      {
+        id: 'setor-09',
+        label: 'Setor 09 · Conteúdo',
+        title: 'SCA Podcast ao vivo',
+        lead: 'Um estúdio fechado dentro do evento para entrevistar, ao vivo, os maiores empresários e empresas.',
+        image: 'setor-09-podcast',
+        fallback: 'founder-jose-silva',
+        imageAlt: 'José Silva, fundador do SCA e apresentador do podcast',
+        position: 'center 30%',
+      },
+    ],
+  },
+  {
+    n: 10,
+    name: 'Fogueira Country',
+    summary: 'À noite: fogueira, DJ e sertanejo.',
+    pages: [
+      {
+        id: 'setor-10',
+        label: 'Setor 10 · À noite',
+        title: 'Fogueira Country',
+        lead: 'Quando a noite chega, a fazenda acende: fogueira gigante, DJ Jesus Luz e o cantor sertanejo oficial do SCA.',
+        image: 'setor-10-fogueira',
+      },
+    ],
+  },
+  {
+    n: 11,
+    name: 'Estacionamento',
+    summary: 'Espaço para 5 mil carros.',
+    pages: [
+      {
+        id: 'setor-11',
+        label: 'Setor 11 · Estrutura',
+        mega: '5 mil',
+        title: 'Estacionamento',
+        lead: 'Estacionamento para 5 mil carros, pensado para receber os visitantes.',
+        image: 'setor-11-estacionamento',
+        imageAlt: 'Vista aérea de um grande estacionamento gramado lotado de carros',
+      },
+    ],
+  },
+];
 
 /** Fecho da página: entra no bloco de CTA do rodapé. */
 export const closingCta = {
