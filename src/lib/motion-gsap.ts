@@ -268,7 +268,7 @@ function initClipReveals() {
 
 /* ---------- Mobile media wipes (stand-in for clip reveals; scrubbed, reversible) ---------- */
 function initMediaWipes() {
-  gsap.utils.toArray<HTMLElement>('.eco__media, .fnd__media, .exp__media').forEach((el) => {
+  gsap.utils.toArray<HTMLElement>('.eco__media, .exp__media').forEach((el) => {
     gsap.fromTo(el, { y: 44, autoAlpha: 0.45 }, {
       y: 0, autoAlpha: 1, ease: 'none',
       scrollTrigger: { trigger: el, start: 'top 96%', end: 'top 52%', scrub: 0.6 },

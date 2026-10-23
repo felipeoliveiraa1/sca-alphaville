@@ -16,10 +16,6 @@ import { about } from '../data/site';
       <div data-stagger="120">
         {about.body.map((p) => <p class="eco__p">{p}</p>)}
       </div>
-      <div class="eco__sign" data-reveal style="--reveal-delay:200ms">
-        <span class="facet" aria-hidden="true"></span>
-        <span class="eco__sign-text">{about.signature}</span>
-      </div>
     </div>
   </div>
 
@@ -72,12 +68,6 @@ import { about } from '../data/site';
   .eco__body { padding-top: 0.6rem; }
   .eco__p { color: var(--text-muted); font-size: var(--fs-lead); line-height: 1.55; }
   .eco__p + .eco__p { margin-top: 1.4rem; }
-  .eco__sign {
-    display: flex; align-items: center; gap: 0.8rem; margin-top: 2.6rem;
-    padding-top: 1.6rem; border-top: 1px solid var(--line-gold);
-  }
-  .eco__sign .facet { color: var(--gold); }
-  .eco__sign-text { font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); }
 
   @media (max-width: 900px) {
     .eco__grid { grid-template-columns: 1fr; gap: 2.5rem; }

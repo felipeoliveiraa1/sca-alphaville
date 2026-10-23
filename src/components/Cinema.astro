@@ -2,12 +2,12 @@
 import { Image } from 'astro:assets';
 import lambo from '../assets/images/lambo-forest-aventador.jpg';
 ---
-<section class="cinema" aria-label="Lamborghini Aventador de um membro do Super Carros Alphaville">
+<section class="cinema" aria-label="Lamborghini Aventador do Super Carros Alphaville">
   <div class="cinema__media">
     <div class="cinema__media-inner" data-parallax="0.12">
       <Image
         src={lambo}
-        alt="Lamborghini Aventador grafite de um membro do Super Carros Alphaville, faróis acesos, em meio à mata ao entardecer"
+        alt="Lamborghini Aventador grafite com os faróis acesos, em meio à mata ao entardecer"
         class="media-cover cinema__img"
         data-kenburns
         widths={[768, 1080, 1440]}
@@ -26,11 +26,6 @@ import lambo from '../assets/images/lambo-forest-aventador.jpg';
       <span class="cinema__l1">Algumas máquinas não entram em cena.</span>
       <span class="cinema__l2 serif gold-text">Elas são a cena.</span>
     </h2>
-  </div>
-
-  <div class="cinema__cap" aria-hidden="true">
-    <span class="facet"></span>
-    <span>Aventador · acervo de um membro</span>
   </div>
 </section>
 
@@ -70,15 +65,7 @@ import lambo from '../assets/images/lambo-forest-aventador.jpg';
   /* Pinned scene (mobile, JS-driven): full stable viewport height */
   .cinema.is-pinned { min-height: 100svh; }
 
-  .cinema__cap {
-    position: absolute; right: var(--gutter); bottom: clamp(1.4rem, 3vw, 2.4rem); z-index: 2;
-    display: flex; align-items: center; gap: 0.7rem;
-    font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
-  }
-  .cinema__cap .facet { color: var(--gold); }
-
   @media (max-width: 760px) {
-    .cinema__cap { display: none; }
     .cinema__line { font-size: clamp(1.7rem, 7vw, 2.6rem); }
   }
 </style>

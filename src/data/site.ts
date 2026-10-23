@@ -37,7 +37,6 @@ export const nav = [
   { label: 'Essência', href: '#essencia' },
   { label: 'Experiências', href: '#experiencias' },
   { label: 'Alcance', href: '#alcance' },
-  { label: 'Fundador', href: '#fundador' },
   { label: 'Parcerias', href: '#parcerias' },
 ] as const;
 
@@ -48,15 +47,15 @@ export const hero = {
     'Onde a paixão por supercarros encontra o networking de alto nível. Não é apenas um clube. É um universo de possibilidades, exclusividade e conexões que movem negócios.',
   ctaPrimary: { label: 'Seja Membro', href: '#membro' },
   ctaSecondary: { label: 'Conheça o Ecossistema', href: '#ecossistema' },
-  marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '140+ Edições', '3.000+ Membros'],
+  marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '+148 Edições', '+3.000 Membros'],
 } as const;
 
-/** Faixa de credenciais logo abaixo do hero */
+/** Faixa de credenciais logo abaixo do hero ("+" sempre na frente do número) */
 export const trustStrip = [
-  { value: '3.000+', label: 'Membros ativos' },
-  { value: '140+', label: 'Edições realizadas' },
+  { value: '+3.000', label: 'Membros ativos' },
+  { value: '+148', label: 'Edições realizadas' },
   { value: '+12', label: 'Estados de atuação' },
-  { value: '30+', label: 'Marcas parceiras' },
+  { value: '+30', label: 'Marcas parceiras' },
 ] as const;
 
 export const essence = {
@@ -91,7 +90,6 @@ export const about = {
     'O que começou como um encontro entre amigos em 2019 se transformou em uma referência nacional e internacional, reunindo empresários, influenciadores e famílias que compartilham a mesma paixão por carros.',
     'Proporcionamos experiências inesquecíveis que conectam pessoas e criam oportunidades reais de negócios, indo muito além da velocidade.',
   ],
-  signature: 'José Édson Mendonça da Silva · Fundador & CEO',
 } as const;
 
 /** Métricas de alcance — "Uma Potência no Cenário Automotivo Global" */
@@ -100,41 +98,41 @@ export const reach = {
   title: 'Nosso alcance vai muito além da velocidade.',
   lead: 'Conectando marcas e pessoas em uma escala sem precedentes.',
   stats: [
-    { value: 3000, suffix: '+', label: 'Membros ativos', note: 'Empresários, investidores e colecionadores' },
+    { value: 3000, prefix: '+', label: 'Membros ativos', note: 'Empresários, investidores e colecionadores' },
     { value: 12, prefix: '+', label: 'Estados no Brasil', note: 'Presença também nos EUA e Europa' },
-    { value: 140, suffix: '+', label: 'Edições realizadas', note: 'Encontros, viagens e experiências' },
-    { value: 30, suffix: '+', label: 'Marcas parceiras', note: 'Ecossistema de luxo e performance' },
+    { value: 148, prefix: '+', label: 'Edições realizadas', note: 'Encontros, viagens e experiências' },
+    { value: 30, prefix: '+', label: 'Marcas parceiras', note: 'Ecossistema de luxo e performance' },
   ],
 } as const;
 
 /** Experiências / formatos de evento */
 export const experiences = [
   {
-    tag: 'Edições Regulares',
-    title: 'Encontros que já passaram de 140 edições',
+    tag: 'Aniversário de 4 anos',
+    title: 'A edição dos 4 anos do SCA',
     body:
-      'De fazendas históricas a autódromos, cada edição é uma curadoria de máquinas raras e pessoas extraordinárias.',
+      'O clube comemorou seus quatro anos com uma edição especial, reunindo membros, famílias e parceiros.',
     image: 'event-4anos-venue',
   },
   {
-    tag: 'Track Days',
-    title: 'A pista como extensão do clube',
+    tag: 'Track Day',
+    title: 'Nosso track day',
     body:
-      'Desempenho de verdade, no limite, com a segurança e o requinte que só um clube fechado proporciona.',
+      'Um registro do track day do SCA: membros acelerando os próprios carros na pista, com toda a estrutura do clube.',
     image: 'corvette-z06-track',
   },
   {
     tag: 'Mega Encontros',
-    title: 'Até 400 supercarros reunidos',
+    title: 'Evento de São Roque',
     body:
-      'O aniversário do clube reuniu centenas de modelos esportivos no Complexo Dream Car Museum, em São Roque.',
+      'O aniversário do clube reuniu membros, famílias e parceiros no Complexo Dream Car Museum, em São Roque.',
     image: 'aerial-saoroque',
   },
   {
-    tag: 'Edições Temáticas',
-    title: 'SCA JDM e capítulos exclusivos',
+    tag: 'Porsche',
+    title: 'Porsches lado a lado',
     body:
-      'Capítulos dedicados, como a 1ª Edição SCA JDM, celebram nichos e culturas dentro do universo automotivo.',
+      'Do 718 Boxster ao 911, uma fileira de cores que traduz a paixão dos membros pela marca alemã.',
     image: 'porsche-row',
   },
   {
@@ -145,19 +143,6 @@ export const experiences = [
     image: 'track-day-cornering',
   },
 ] as const;
-
-export const founder = {
-  eyebrow: 'Liderança',
-  name: 'José Édson Mendonça da Silva',
-  role: 'Fundador & CEO',
-  quote:
-    'Transformamos uma paixão de fim de semana em um dos ecossistemas de negócios mais exclusivos do país. Aqui, cada relação importa.',
-  body: [
-    'Rosto à frente da expansão do clube e apresentador do Podcast Super Carros Alphaville, José Édson recebe personalidades do setor automotivo e do empreendedorismo para discutir negócios, mercado e estilo de vida.',
-    'Sua visão uniu a paixão por alta performance ao networking de altíssimo nível, criando um ambiente onde empresários constroem relações que duram e geram oportunidades reais.',
-  ],
-  image: 'founder-jose-silva',
-} as const;
 
 export const partners = {
   eyebrow: 'Ecossistema de Parcerias',
