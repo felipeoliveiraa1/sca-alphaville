@@ -308,7 +308,7 @@ export const setores: Setor[] = [
         label: 'Setor 08 · Experiência',
         title: 'Volta Rápida',
         lead: 'Uma volta na pista a bordo dos carros mais exclusivos do Brasil.',
-        chips: ['Lamborghini Aventador', 'Toyota Supra', 'Nissan Skyline GT-R', 'Mitsubishi Evo', 'Nissan 370Z & 350Z Nismo'],
+        chips: ['Lamborghini Aventador', 'Toyota Supra', 'Nissan Skyline GT-R', 'Mitsubishi Evo', 'Nissan 370Z & 350Z Nismo', 'Fúria', 'Chevrolet S10'],
         image: 'setor-08-volta-rapida',
         fallback: 'lambo-forest-aventador',
         imageAlt: 'Lamborghini Aventador com os faróis acesos',

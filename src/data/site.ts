@@ -123,7 +123,7 @@ export const experiences: readonly Experience[] = [
     image: 'corvette-z06-track',
   },
   {
-    title: 'Evento de São Roque',
+    title: 'Eventos em São Roque',
     body:
       'Um mega encontro em São Roque, reunindo membros, famílias e parceiros do clube.',
     image: 'aerial-saoroque',
@@ -139,7 +139,7 @@ export const experiences: readonly Experience[] = [
     tag: 'No Limite',
     title: 'SCA Track Day',
     body:
-      'Aventador SVJ, Huracán STO e uma matilha de esportivos traçando as curvas lado a lado. O som, a precisão e a emoção que só a pista entrega.',
+      'Carros superesportivos lado a lado. O som e a experiência que só a pista entrega.',
     image: 'track-day-cornering',
   },
 ];
