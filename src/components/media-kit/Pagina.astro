@@ -57,7 +57,7 @@ const pad = (x: number) => String(x).padStart(2, '0');
   <div class="pg__body container container--wide">
     <div class="pg__copy">
       {page.badge && <p class="pg__badge" data-reveal="fade">{page.badge}</p>}
-      {page.mega && <p class="pg__mega" data-reveal>{page.mega}</p>}
+      {page.mega && <p class:list={['pg__mega', page.mega.length > 6 && 'pg__mega--long']} data-reveal>{page.mega}</p>}
       <h2 class="pg__title" data-reveal data-split>{page.title}</h2>
       {page.accent && <p class="pg__accent" data-reveal style="--reveal-delay:100ms">{page.accent}</p>}
       {page.lead && <p class="pg__lead" data-reveal style="--reveal-delay:160ms">{page.lead}</p>}
@@ -158,6 +158,8 @@ const pad = (x: number) => String(x).padStart(2, '0');
     background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
     margin-bottom: 0.12em; padding-right: 0.05em;
   }
+  /* a word, not a number ("Ecossistema SCA"): same gold monument, sized to fit */
+  .pg__mega--long { font-size: clamp(2.8rem, 1rem + 7vw, 8rem); line-height: 0.92; letter-spacing: -0.04em; word-spacing: 0.14em; margin-bottom: 0.3em; }
   .pg__title {
     font-weight: 600; text-transform: uppercase;
     font-size: clamp(2.6rem, 0.8rem + 6vw, 7rem); line-height: 0.94; letter-spacing: -0.035em;
@@ -168,6 +170,10 @@ const pad = (x: number) => String(x).padStart(2, '0');
     text-transform: none; letter-spacing: -0.025em; word-spacing: 0.06em;
     font-size: clamp(2rem, 0.9rem + 3.6vw, 4.8rem); line-height: 1.04; max-width: 21ch;
   }
+  /* statement page: the gold headline ("Ecossistema SCA") may use the full width; the
+     sentence under it steps down so headline + sentence + figures fit one screen */
+  .pg--statement .pg__copy { max-width: none; }
+  .pg--statement .pg__title { font-size: clamp(1.9rem, 0.9rem + 3vw, 4.2rem); }
   .pg__accent {
     margin-top: 0.7rem;
     font-family: var(--font-serif); font-style: italic; color: var(--gold);
@@ -192,6 +198,7 @@ const pad = (x: number) => String(x).padStart(2, '0');
     .pg__count { font-size: 0.82rem; }
     .pg__title { font-size: clamp(2.3rem, 11vw, 3.6rem); max-width: none; }
     .pg__mega { font-size: clamp(4.6rem, 27vw, 8rem); }
+    .pg__mega.pg__mega--long { font-size: clamp(2.6rem, 11.5vw, 4rem); }
     .pg--art .pg__scrim {
       background: linear-gradient(180deg, rgba(6,14,11,0.7) 0%, rgba(6,14,11,0) 22%, rgba(6,14,11,0.1) 42%, rgba(6,14,11,0.9) 72%, rgba(6,14,11,0.98) 100%);
     }

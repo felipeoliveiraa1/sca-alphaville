@@ -64,7 +64,8 @@ export const capa = {
 export const ecossistema = {
   page: {
     id: 'ecossistema',
-    label: 'Ecossistema SCA',
+    label: 'Quem somos',
+    mega: 'Ecossistema SCA',
     title: 'A SCA Super Carros Alphaville está em 12 estados do Brasil e em 7 países.',
     lead: 'São mais de 3 mil empresários proprietários de carros superesportivos. Um ecossistema com os maiores empresários do país.',
     image: 'ecossistema',
