@@ -1,6 +1,7 @@
 ---
-/* One full-screen "PDF page" of the media kit: big art, sector label, page counter. */
-import { Image, getImage } from 'astro:assets';
+/* One "PDF page" of the media kit: the photo shown whole, framed beside the copy (never
+   under it), a soft blur of the same photo as the page's mood, sector label + counter. */
+import { Image } from 'astro:assets';
 import type { Pagina } from '../../data/media-kit';
 import { resolveImage, widthsFor } from '../../lib/media-kit-images';
 
@@ -8,49 +9,29 @@ interface Props {
   page: Pagina;
   n: number;
   total: number;
-  /** statement: long mixed-case title · plain: no art, content-led page (index, stand tiers) */
+  /** statement: long mixed-case title · plain: no art, content-led page (index) */
   variant?: 'default' | 'statement' | 'plain';
   /** outline numeral behind a page that has no art yet (its sector number) */
   ghost?: string;
 }
 const { page, n, total, variant = 'default', ghost } = Astro.props;
 const img = variant === 'plain' ? undefined : resolveImage(page.image, page.fallback);
-// a portrait cut for phones is picked up by name: "<image>-mobile"
-const imgMobile = img ? resolveImage(page.imageMobile ?? (page.image && `${page.image}-mobile`)) : undefined;
-const mobileSet = imgMobile
-  ? await getImage({ src: imgMobile, widths: widthsFor(imgMobile, [480, 768]), format: 'webp' })
-  : undefined;
 const pad = (x: number) => String(x).padStart(2, '0');
-// one very long word ("ESTACIONAMENTO") needs a smaller title on phones or it gets clipped
+// one very long word ("ESTACIONAMENTO") needs a smaller title or it gets clipped
 const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12;
+const ctaExternal = page.cta?.href.startsWith('http') ?? false;
 ---
 <section
-  class:list={[
-    'pg', `pg--${variant}`, img ? 'pg--art' : variant !== 'plain' && 'pg--type',
-    page.copyAt === 'top' && 'pg--top', page.video && 'pg--video',
-  ]}
+  class:list={['pg', `pg--${variant}`, img ? 'pg--art' : variant !== 'plain' && 'pg--type', page.video && 'pg--video']}
   id={page.id}
 >
-  {variant !== 'plain' && (
-    <div class="pg__media" data-parallax="0.08" aria-hidden={img ? undefined : 'true'}>
-      {img ? (
-        <picture>
-          {mobileSet && <source media="(max-width: 760px)" srcset={mobileSet.srcSet.attribute} sizes="100vw" />}
-          <Image
-            src={img}
-            alt={page.imageAlt ?? ''}
-            class="media-cover"
-            widths={widthsFor(img)}
-            sizes="100vw"
-            quality={78}
-            loading="lazy"
-            style={page.position ? `object-position:${page.position}` : undefined}
-          />
-        </picture>
-      ) : (
-        ghost && <span class="pg__ghost">{ghost}</span>
-      )}
+  {img && (
+    <div class="pg__ambient" aria-hidden="true">
+      <Image src={img} alt="" widths={[480]} sizes="480px" quality={50} loading="lazy" />
     </div>
+  )}
+  {!img && variant !== 'plain' && (
+    <div class="pg__media" aria-hidden="true">{ghost && <span class="pg__ghost">{ghost}</span>}</div>
   )}
   <div class="pg__scrim" aria-hidden="true"></div>
 
@@ -73,22 +54,44 @@ const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12
       )}
       {page.cta && (
         <div class="pg__cta" data-reveal style="--reveal-delay:220ms">
-          <a class="btn" href={page.cta.href}>
+          <a
+            class="btn"
+            href={page.cta.href}
+            target={ctaExternal ? '_blank' : undefined}
+            rel={ctaExternal ? 'noopener' : undefined}
+            aria-label={ctaExternal ? `${page.cta.label}, falar no WhatsApp (abre em nova aba)` : undefined}
+          >
             <span>{page.cta.label}</span><span class="btn__arrow" aria-hidden="true">→</span>
           </a>
         </div>
       )}
+      <slot name="copy" />
     </div>
-    {page.video && (
-      <figure class="pg__video" data-mk-video>
-        <video class="pg__video-el" muted loop playsinline preload="none" poster={page.video.poster} aria-label={page.video.title}>
-          <source data-src={page.video.src} type="video/mp4" />
-        </video>
-        <button class="pg__sound" type="button" data-mk-sound aria-pressed="false">
-          <span class="pg__sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <span class="pg__sound-label">Ativar som</span>
-        </button>
-      </figure>
+
+    {img && (
+      <div class="pg__visual">
+        <figure class="pg__photo" data-reveal="scale" style={`--ar:${(img.width / img.height).toFixed(4)}`}>
+          <Image
+            src={img}
+            alt={page.imageAlt ?? ''}
+            widths={widthsFor(img, [640, 960, 1280])}
+            sizes="(max-width: 760px) 100vw, 62vw"
+            quality={82}
+            loading="lazy"
+          />
+        </figure>
+        {page.video && (
+          <figure class="pg__video" data-mk-video>
+            <video class="pg__video-el" muted loop playsinline preload="none" poster={page.video.poster} aria-label={page.video.title}>
+              <source data-src={page.video.src} type="video/mp4" />
+            </video>
+            <button class="pg__sound" type="button" data-mk-sound aria-pressed="false">
+              <span class="pg__sound-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+              <span class="pg__sound-label">Ativar som</span>
+            </button>
+          </figure>
+        )}
+      </div>
     )}
     <slot />
   </div>
@@ -101,16 +104,21 @@ const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12
     display: flex; flex-direction: column;
   }
 
-  /* ---- Art layer ---- */
-  .pg__media { position: absolute; inset: -8% 0; z-index: -2; will-change: transform; }
+  /* ---- Mood: the page's own photo, blurred and dimmed behind everything (desktop) ---- */
+  .pg__ambient {
+    position: absolute; inset: -12%; z-index: -2; pointer-events: none;
+    opacity: 0.34; filter: blur(52px) saturate(1.25);
+  }
+  .pg__ambient :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .pg__scrim { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
   .pg--art .pg__scrim {
     background:
-      linear-gradient(180deg, rgba(6,14,11,0.66) 0%, rgba(6,14,11,0) 24%, rgba(6,14,11,0) 40%, rgba(6,14,11,0.84) 74%, rgba(6,14,11,0.98) 100%),
-      linear-gradient(90deg, rgba(6,14,11,0.72) 0%, rgba(6,14,11,0.18) 55%, rgba(6,14,11,0) 80%);
+      linear-gradient(90deg, rgba(6,14,11,0.78) 0%, rgba(6,14,11,0.3) 42%, rgba(6,14,11,0) 68%),
+      radial-gradient(110% 90% at 70% 50%, rgba(6,14,11,0) 30%, rgba(6,14,11,0.7) 100%);
   }
 
   /* No art yet: a typographic page (emerald depth + the sector number in gold outline) */
+  .pg__media { position: absolute; inset: 0; z-index: -2; }
   .pg--type .pg__media {
     background:
       radial-gradient(60% 70% at 80% 32%, rgba(43,124,94,0.30), transparent 66%),
@@ -150,19 +158,39 @@ const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12
   }
   .pg__count i { font-style: normal; color: var(--text-dim); margin-inline: 0.4em; }
 
-  /* ---- Copy: anchored low, like a cover line ---- */
   .pg__body {
     flex: 1; display: flex; flex-direction: column; justify-content: flex-end;
     padding-top: clamp(2rem, 6vh, 4rem); padding-bottom: clamp(3rem, 9vh, 6.5rem);
   }
-  .pg--plain .pg__body, .pg--top .pg__body { justify-content: flex-start; }
-  .pg--art.pg--top .pg__scrim {
-    background:
-      linear-gradient(180deg, rgba(6,14,11,0.94) 0%, rgba(6,14,11,0.78) 34%, rgba(6,14,11,0) 62%, rgba(6,14,11,0.4) 100%),
-      linear-gradient(90deg, rgba(6,14,11,0.55) 0%, rgba(6,14,11,0) 60%);
-  }
+  .pg--plain .pg__body { justify-content: flex-start; }
   .pg__copy { max-width: 60rem; }
 
+  /* ---- Art pages: copy | framed photo. The photo is shown whole, never under text ---- */
+  .pg--art .pg__body {
+    display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+    align-items: center; align-content: center; column-gap: clamp(2.5rem, 5vw, 6rem);
+    padding-top: clamp(1.5rem, 4vh, 3rem); padding-bottom: clamp(2.5rem, 7vh, 5rem);
+  }
+  .pg--statement.pg--art .pg__body { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .pg--art .pg__copy { max-width: none; }
+  .pg__visual { position: relative; display: flex; justify-content: flex-end; align-items: center; }
+  .pg__photo {
+    position: relative; margin: 0;
+    /* whole photo at its own ratio; on short windows it narrows instead of cropping */
+    width: min(100%, calc((100svh - 15rem) * var(--ar)));
+    aspect-ratio: var(--ar);
+    background: var(--bg-1); border: 1px solid var(--line-gold);
+    box-shadow: 0 50px 110px -50px rgba(0,0,0,0.95);
+  }
+  .pg__photo :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .pg__photo::before, .pg__photo::after, .pg__video::before, .pg__video::after {
+    content: ''; position: absolute; z-index: 1; width: 26px; height: 26px;
+    border: 1px solid var(--gold); pointer-events: none;
+  }
+  .pg__photo::before, .pg__video::before { top: -7px; left: -7px; border-right: 0; border-bottom: 0; }
+  .pg__photo::after, .pg__video::after { bottom: -7px; right: -7px; border-left: 0; border-top: 0; }
+
+  /* ---- Type ---- */
   .pg__badge {
     display: inline-block; margin-bottom: 1.4rem;
     font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
@@ -186,10 +214,7 @@ const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12
     text-transform: none; letter-spacing: -0.025em; word-spacing: 0.06em;
     font-size: clamp(2rem, 0.9rem + 3.6vw, 4.8rem); line-height: 1.04; max-width: 21ch;
   }
-  /* statement page: the gold headline ("Ecossistema SCA") may use the full width; the
-     sentence under it steps down so headline + sentence + figures fit one screen */
   .pg--statement .pg__copy { max-width: none; }
-  .pg--statement .pg__title { font-size: clamp(1.9rem, 0.9rem + 3vw, 4.2rem); }
   .pg__accent {
     margin-top: 0.7rem;
     font-family: var(--font-serif); font-style: italic; color: var(--gold);
@@ -208,21 +233,24 @@ const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12
   }
   .pg__cta { margin-top: 2.2rem; }
 
-  /* ---- Video page (DJ): a framed 9:16 reel beside the copy, over the stage art ---- */
-  .pg--video .pg__body { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: clamp(2rem, 5vw, 5rem); }
-  .pg--video .pg__copy { flex: 1 1 auto; min-width: 0; }
+  /* the copy column of an art page is narrower: sizes step down to fit it */
+  .pg--art .pg__title { font-size: clamp(2.3rem, 0.9rem + 2.7vw, 4.8rem); max-width: none; }
+  .pg--art .pg__title--long { font-size: clamp(1.9rem, 0.8rem + 2.1vw, 3.8rem); }
+  .pg--statement.pg--art .pg__title { font-size: clamp(1.7rem, 0.8rem + 2.2vw, 3.4rem); }
+  .pg--art .pg__mega { font-size: clamp(4rem, 1rem + 6.6vw, 9rem); }
+  .pg--art .pg__mega--long { font-size: clamp(2.4rem, 0.9rem + 3.6vw, 5.4rem); }
+  .pg--art .pg__accent { font-size: clamp(1.4rem, 0.9rem + 1.4vw, 2.4rem); }
+  .pg--art .pg__lead { font-size: clamp(1rem, 0.92rem + 0.35vw, 1.25rem); max-width: 42ch; }
+
+  /* ---- Video page (DJ): the reel stands over the stage photo's right edge ---- */
+  .pg--video .pg__visual { justify-content: flex-start; min-height: min(64svh, 580px); }
+  .pg--video .pg__photo { width: min(80%, calc((100svh - 15rem) * var(--ar))); }
   .pg__video {
-    position: relative; flex: none; align-self: center; margin: 0;
-    height: min(68svh, 660px); aspect-ratio: 9 / 16;
+    position: absolute; right: 0; top: 50%; translate: 0 -50%; z-index: 2; margin: 0;
+    height: min(64svh, 580px); aspect-ratio: 9 / 16;
     background: #000; border: 1px solid var(--line-gold);
-    box-shadow: 0 40px 90px -40px rgba(0,0,0,0.9);
+    box-shadow: 0 40px 90px -30px rgba(0,0,0,0.95);
   }
-  .pg__video::before, .pg__video::after {
-    content: ''; position: absolute; z-index: 1; width: 26px; height: 26px;
-    border: 1px solid var(--gold); pointer-events: none;
-  }
-  .pg__video::before { top: -7px; left: -7px; border-right: 0; border-bottom: 0; }
-  .pg__video::after { bottom: -7px; right: -7px; border-left: 0; border-top: 0; }
   .pg__video-el { width: 100%; height: 100%; object-fit: cover; }
 
   /* sound pill, in the voice of the site's ambient toggle */
@@ -247,6 +275,7 @@ const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12
     .pg__sound.is-on .pg__sound-bars i { animation: none; height: 9px; }
   }
 
+  /* ---- Phones: photo on top (edge to edge, whole), copy below ---- */
   @media (max-width: 760px) {
     .pg__bar { padding-top: 5.4rem; }
     .pg__label { font-size: 0.68rem; letter-spacing: 0.18em; }
@@ -255,25 +284,29 @@ const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12
     .pg__title--long { font-size: clamp(1.6rem, 8.4vw, 3.6rem); }
     .pg__mega { font-size: clamp(4.6rem, 27vw, 8rem); }
     .pg__mega.pg__mega--long { font-size: clamp(2.6rem, 11.5vw, 4rem); }
-    .pg--art .pg__scrim {
-      background: linear-gradient(180deg, rgba(6,14,11,0.7) 0%, rgba(6,14,11,0) 22%, rgba(6,14,11,0.1) 42%, rgba(6,14,11,0.9) 72%, rgba(6,14,11,0.98) 100%);
-    }
     .pg__ghost { font-size: clamp(9rem, 62vw, 20rem); top: 38%; }
 
-    /* Video page on phones: the reel fills the screen (Reels-style) behind the copy.
-       It carries its own scrim so the sound pill stays above the shading. */
-    .pg--video .pg__media { display: none; }
-    .pg--video .pg__bar, .pg--video .pg__copy { position: relative; z-index: 1; }
-    .pg--video .pg__body { flex-direction: column; align-items: stretch; justify-content: flex-end; }
-    .pg--video .pg__copy { flex: 0 0 auto; }  /* stay a bottom block, don't grow over the reel */
-    /* stretch to the insets: the desktop align-self: center would shrink it to the video's own size */
-    .pg__video { position: absolute; inset: 0; z-index: 0; align-self: stretch; height: auto; aspect-ratio: auto; border: 0; box-shadow: none; }
-    .pg__video::before {
-      inset: 0; width: auto; height: auto; border: 0;
-      background: linear-gradient(180deg, rgba(6,14,11,0.6) 0%, rgba(6,14,11,0) 20%, rgba(6,14,11,0.05) 44%, rgba(6,14,11,0.88) 72%, rgba(6,14,11,0.98) 100%);
+    .pg__ambient { display: none; }
+    .pg--art .pg__scrim { background: radial-gradient(80% 40% at 50% 0%, rgba(43,124,94,0.16), transparent 70%); }
+    .pg--art .pg__body {
+      display: flex; flex-direction: column; justify-content: center; gap: 1.6rem;
+      padding-top: 1.1rem; padding-bottom: 3.4rem;
     }
-    .pg__video::after { display: none; }
-    .pg__sound { left: auto; right: var(--gutter); top: 7.6rem; bottom: auto; translate: none; }
+    .pg__visual { order: -1; margin-inline: calc(-1 * var(--gutter)); justify-content: center; }
+    .pg__photo { width: 100%; border-inline: 0; box-shadow: none; }
+    .pg__photo::before, .pg__photo::after { display: none; }
+
+    .pg--art .pg__title { font-size: clamp(2rem, 9.5vw, 3rem); }
+    .pg--art .pg__title--long { font-size: clamp(1.6rem, 7.6vw, 2.6rem); }
+    .pg--statement.pg--art .pg__title { font-size: clamp(1.6rem, 7.2vw, 2.4rem); }
+    .pg--art .pg__mega { font-size: clamp(3.6rem, 19vw, 6rem); }
+    .pg--art .pg__mega--long { font-size: clamp(2.2rem, 10.5vw, 3.4rem); }
+    .pg--art .pg__lead { font-size: 1.02rem; }
+
+    /* video page: the reel is the visual on phones (the stage art stays on desktop) */
+    .pg--video .pg__photo { display: none; }
+    .pg--video .pg__visual { min-height: 0; margin-inline: 0; }
+    .pg__video { position: relative; right: auto; top: auto; translate: none; height: min(54svh, 470px); }
   }
 </style>
 

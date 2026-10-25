@@ -3,10 +3,12 @@
  * Roteiro do José (áudios de 23/10/2026): uma página corrida, estilo PDF, com uma
  * imagem grande por página: capa, ecossistema, Arena VIP e os 11 setores do evento.
  *
- * IMAGENS: cada página procura src/assets/images/media-kit/<image>.(jpg|png|webp).
+ * IMAGENS: cada página procura src/assets/images/media-kit/<image>.(jpg|png|webp) e a
+ * mostra inteira, emoldurada ao lado do texto (nunca com texto por cima).
  * Sem o arquivo, usa `fallback` (foto real do site) ou vira uma página tipográfica.
  *
- * ⚠ CONFIRMAR: mês do evento; metragens, entregas e valores dos stands.
+ * STANDS: uma opção só ("Reservar meu stand"), sem tamanhos nem categorias.
+ * ⚠ CONFIRMAR: mês do evento.
  */
 import { contact } from './site';
 
@@ -45,11 +47,8 @@ export type Pagina = {
   lead?: string;
   chips?: readonly string[];
   image?: string;                  // nome do arquivo em assets/images/media-kit
-  imageMobile?: string;            // versão vertical p/ celular (padrão: "<image>-mobile", se existir)
   fallback?: string;               // foto real do site enquanto a imagem final não chega
   imageAlt?: string;
-  position?: string;               // object-position da imagem
-  copyAt?: 'top';                  // texto no alto quando o assunto da imagem está embaixo
   cta?: { label: string; href: string };
   video?: { src: string; poster: string; title: string };  // vídeo vertical (9:16) em public/video
 };
@@ -96,81 +95,13 @@ export const programacao = {
   title: 'Dois dias, onze setores e sem hora para terminar.',
 };
 
-/* ---------------- Stands (Setor 02) ---------------- */
-
-export type StandTier = {
-  name: string;
-  width: number;          // metros (frente)
-  depth: number;          // metros (fundo)
-  pitch: string;
-  features: readonly string[];
-  price: string | null;   // null → "Sob consulta"
-  recommended?: boolean;
-};
-
-// CONFIRMAR: metragens, entregas e valores abaixo são uma proposta inicial.
-const tiers: StandTier[] = [
-  {
-    name: 'Prata',
-    width: 3,
-    depth: 3,
-    pitch: 'Presença essencial para apresentar a marca e gerar contatos qualificados.',
-    features: [
-      'Espaço demarcado na área de expositores',
-      '2 credenciais de expositor',
-      'Marca citada na cobertura do evento',
-    ],
-    price: null,
-  },
-  {
-    name: 'Ouro',
-    width: 6,
-    depth: 3,
-    pitch: 'O dobro de frente para demonstrações, atendimento e ativação de produto.',
-    features: [
-      'Espaço demarcado na área de expositores',
-      '4 credenciais de expositor',
-      'Marca citada na cobertura do evento',
-      'Logo no mapa oficial do evento',
-    ],
-    price: null,
-    recommended: true,
-  },
-  {
-    name: 'Diamante',
-    width: 10,
-    depth: 6,
-    pitch: 'Área nobre, com espaço para veículo em exposição e ativação completa.',
-    features: [
-      'Posição de destaque na área de expositores',
-      'Espaço para veículo em exposição',
-      '8 credenciais de expositor',
-      'Post colaborativo no Instagram do SCA',
-      'Logo no mapa oficial do evento',
-    ],
-    price: null,
-  },
-];
-
-export const planos = {
-  page: {
-    id: 'planos',
-    label: 'Setor 02 · Stands',
-    title: 'Prata, Ouro ou Diamante.',
-    lead: 'Três categorias de stand para três níveis de presença no SCA Country.',
-  } satisfies Pagina,
-  tiers,
-  fine: 'Metragens, entregas e valores finais constam na proposta comercial enviada na reserva.',
-};
-
 /* ---------------- Setores (ordem e números ditados pelo José) ---------------- */
 
 export type Setor = {
   n: number;
   name: string;
   summary: string;
-  /** páginas do setor; 'planos' = página das categorias de stand */
-  pages: readonly (Pagina | 'planos')[];
+  pages: readonly Pagina[];
 };
 
 export const setores: Setor[] = [
@@ -195,11 +126,9 @@ export const setores: Setor[] = [
         title: 'A pista',
         accent: 'Um campo de provas completo.',
         lead: 'Uma estrutura inteira de pistas em plena fazenda, em Tatuí.',
-        chips: ['Pista oval', 'Slalom', 'Baixo atrito', 'Off-road', 'Rampa 20%'],
-        image: 'setor-01-pista',
-        imageAlt: 'Vista aérea do campo de provas em Tatuí, com a pista oval cercada por plantações',
-        position: '100% 50%',  // na foto vertical (celular) a curva oval fica à direita
-        copyAt: 'top',         // e na base das duas fotos
+        chips: ['Pista oval', 'Slalom', 'Baixo atrito', 'Off-road', 'Rampa 20%', 'Pistas especiais'],
+        image: 'setor-01-pista-mapa',
+        imageAlt: 'Vista aérea do campo de provas em Tatuí com as áreas legendadas: pista oval, pista slalom, pista de baixo atrito, pistas off-road, rampa de 20%, pistas especiais, acessórios e portaria',
       },
     ],
   },
@@ -216,9 +145,8 @@ export const setores: Setor[] = [
         lead: 'Uma feira dentro do evento, com mais de 100 empresas expondo. Seja uma empresa parceira e monte o seu stand.',
         image: 'setor-02-stands',
         imageAlt: 'Fileira de tendas pretas de expositores com supercarros estacionados em frente',
-        cta: { label: 'Escolher meu stand', href: '#planos' },
+        cta: { label: reserveCta.label, href: reserveCta.href },
       },
-      'planos',
       {
         id: 'stand-sca',
         label: 'Setor 02 · Stand oficial',
@@ -257,7 +185,6 @@ export const setores: Setor[] = [
         lead: 'O espaço para empresários se conectarem e fazerem negócios. No telão da arena, a empresa de cada empresário aparece para todos os presentes.',
         image: 'setor-04-arena-business',
         imageAlt: 'Arena Business com telão, sofás de couro e empresários conversando',
-        position: '15% 50%',  // no celular, mantém o telão "ARENA BUSINESS" inteiro no quadro
       },
     ],
   },
@@ -338,7 +265,6 @@ export const setores: Setor[] = [
         lead: 'Um estúdio fechado dentro do evento para entrevistar, ao vivo, os maiores empresários e empresas.',
         image: 'setor-09-podcast',
         imageAlt: 'Estúdio do SCA Podcast montado no evento, com poltronas, microfones e câmeras',
-        position: '36% 50%',  // no celular, mantém o letreiro "SCA PODCAST" inteiro
         fallback: 'founder-jose-silva',
       },
     ],

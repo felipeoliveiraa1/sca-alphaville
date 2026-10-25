@@ -4,7 +4,6 @@ import Capa from '../components/media-kit/Capa.astro';
 import Ecossistema from '../components/media-kit/Ecossistema.astro';
 import Pagina from '../components/media-kit/Pagina.astro';
 import Programacao from '../components/media-kit/Programacao.astro';
-import Planos from '../components/media-kit/Planos.astro';
 import { event, mkNav, reserveCta, closingCta, vip, setores } from '../data/media-kit';
 
 // Read like a PDF: cover, ecosystem, VIP arena, index, then every sector page, numbered.
@@ -25,11 +24,7 @@ const pad = (x: number) => String(x).padStart(2, '0');
   <Ecossistema n={2} total={total} />
   <Pagina page={vip} n={3} total={total} />
   <Programacao n={4} total={total} />
-  {sectorPages.map(({ setor, page }, i) =>
-    page === 'planos' ? (
-      <Planos n={first + i} total={total} />
-    ) : (
-      <Pagina page={page} n={first + i} total={total} ghost={page.mega ? undefined : pad(setor.n)} />
-    ),
-  )}
+  {sectorPages.map(({ setor, page }, i) => (
+    <Pagina page={page} n={first + i} total={total} ghost={page.mega ? undefined : pad(setor.n)} />
+  ))}
 </Base>

@@ -1,13 +1,9 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
 import { capa, event, reserveCta } from '../../data/media-kit';
 import { resolveImage, widthsFor } from '../../lib/media-kit-images';
 
 const cover = resolveImage(capa.image)!;
-const coverMobile = resolveImage(`${capa.image}-mobile`);
-const mobileSet = coverMobile
-  ? await getImage({ src: coverMobile, widths: widthsFor(coverMobile, [480, 768]), format: 'webp' })
-  : undefined;
 const facts = [
   { label: 'Onde', value: event.place },
   { label: 'Quando', value: event.date },
@@ -16,9 +12,9 @@ const facts = [
 ---
 <!-- Same .hero__* hooks as the home hero, so motion-gsap plays the curtain intro + scroll exit -->
 <section class="hero mk-cover grain" id="top">
-  <div class="hero__media" data-parallax="0.16">
-    <picture>
-      {mobileSet && <source media="(max-width: 760px)" srcset={mobileSet.srcSet.attribute} sizes="100vw" />}
+  <!-- the frame clips the media's intro zoom: full-bleed on desktop, a 4:3 block on phones -->
+  <div class="hero__frame">
+    <div class="hero__media" data-parallax="0.16">
       <Image
         src={cover}
         alt={capa.imageAlt}
@@ -29,7 +25,7 @@ const facts = [
         fetchpriority="high"
         quality={82}
       />
-    </picture>
+    </div>
   </div>
   <div class="hero__scrim" aria-hidden="true"></div>
   <div class="hero__glow" aria-hidden="true"></div>
@@ -75,21 +71,23 @@ const facts = [
     overflow: clip; isolation: isolate;
   }
 
-  .hero__media { position: absolute; inset: -8% 0; will-change: transform; z-index: 0; }
+  .hero__frame { position: absolute; inset: 0; z-index: 0; overflow: clip; }
+  .hero__media { position: absolute; inset: -8% 0; will-change: transform; }
   .hero__img { object-position: center 52%; }
+  /* light touch: shade only where the copy sits (bottom, left), the rest of the photo stays bright */
   .hero__scrim {
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background:
       linear-gradient(180deg,
-        rgba(6,14,11,0.62) 0%,
-        rgba(6,14,11,0.06) 26%,
-        rgba(6,14,11,0.22) 50%,
-        rgba(6,14,11,0.90) 80%,
-        rgba(6,14,11,1) 100%),
+        rgba(6,14,11,0.5) 0%,
+        rgba(6,14,11,0) 20%,
+        rgba(6,14,11,0) 46%,
+        rgba(6,14,11,0.74) 78%,
+        rgba(6,14,11,0.96) 100%),
       linear-gradient(90deg,
-        rgba(6,14,11,0.78) 0%,
-        rgba(6,14,11,0.30) 50%,
-        rgba(6,14,11,0) 78%);
+        rgba(6,14,11,0.62) 0%,
+        rgba(6,14,11,0.16) 42%,
+        rgba(6,14,11,0) 64%);
   }
   .hero__glow {
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
@@ -106,6 +104,7 @@ const facts = [
     font-weight: 600; text-transform: uppercase;
     font-size: clamp(2.9rem, 0.6rem + 8.4vw, 9rem);
     line-height: 0.92; letter-spacing: -0.04em; word-spacing: 0.08em;
+    text-shadow: 0 2px 36px rgba(0,0,0,0.45);  /* holds up over the brighter photo */
   }
   .hero__title .line-mask > span { padding-block: 0.04em; }
   .hero__title .line-mask:nth-child(2) > span {
@@ -146,11 +145,20 @@ const facts = [
   .hero__link:hover { color: var(--gold-bright); }
   .hero__link:hover .hero__link-line::after, .hero__link:focus-visible .hero__link-line::after { transform: scaleX(1); }
 
+  /* Phones: the photo on top, whole and unshaded (below the nav), the cover line under it */
   @media (max-width: 760px) {
-    /* the copy covers most of a phone's height: darken from a third down, keep the track + tents up top */
-    .hero__scrim {
-      background: linear-gradient(180deg, rgba(6,14,11,0.55) 0%, rgba(6,14,11,0.1) 16%, rgba(6,14,11,0.68) 34%, rgba(6,14,11,0.9) 50%, rgba(6,14,11,0.98) 100%);
+    .hero {
+      flex-direction: column; align-items: stretch; justify-content: flex-start;
+      padding-top: 5.2rem; padding-bottom: 2.4rem;
     }
+    .hero__frame { position: relative; inset: auto; flex: none; aspect-ratio: 4 / 3; }
+    .hero__scrim {
+      inset: 5.2rem 0 auto; height: 75vw;
+      background: linear-gradient(180deg, rgba(6,14,11,0.3) 0%, rgba(6,14,11,0) 20%, rgba(6,14,11,0) 74%, var(--bg) 100%);
+    }
+    .hero__glow { display: none; }
+    .hero__content { margin-top: 1.2rem; }
+    .hero__title { text-shadow: none; }
     .mk-facts { flex-direction: column; gap: 0.9rem; }
   }
   @media (max-width: 480px) {

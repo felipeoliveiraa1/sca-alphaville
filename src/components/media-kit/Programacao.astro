@@ -6,16 +6,12 @@ import { programacao, setores } from '../../data/media-kit';
 interface Props { n: number; total: number; }
 const { n, total } = Astro.props;
 const pad = (x: number) => String(x).padStart(2, '0');
-const firstId = (s: (typeof setores)[number]) => {
-  const p = s.pages[0];
-  return p === 'planos' ? 'planos' : p.id;
-};
 ---
 <Pagina page={programacao} n={n} total={total} variant="plain">
   <ol class="toc" data-stagger="45">
     {setores.map((s) => (
       <li>
-        <a class="toc__row" href={`#${firstId(s)}`}>
+        <a class="toc__row" href={`#${s.pages[0].id}`}>
           <span class="toc__n">{pad(s.n)}</span>
           <span class="toc__text">
             <span class="toc__name">{s.name}</span>
