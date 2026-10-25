@@ -303,10 +303,11 @@ const ctaExternal = page.cta?.href.startsWith('http') ?? false;
     .pg--art .pg__mega--long { font-size: clamp(2.2rem, 10.5vw, 3.4rem); }
     .pg--art .pg__lead { font-size: 1.02rem; }
 
-    /* video page: the reel is the visual on phones (the stage art stays on desktop) */
-    .pg--video .pg__photo { display: none; }
-    .pg--video .pg__visual { min-height: 0; margin-inline: 0; }
-    .pg__video { position: relative; right: auto; top: auto; translate: none; height: min(54svh, 470px); }
+    /* video page on phones: stage photo on top, then the copy, then the reel — both whole,
+       nothing overlapping (the wrapper steps aside so the three can be ordered) */
+    .pg--video .pg__visual { display: contents; }
+    .pg--video .pg__photo { order: -1; width: auto; margin-inline: calc(-1 * var(--gutter)); }
+    .pg__video { position: relative; right: auto; top: auto; translate: none; order: 1; align-self: center; height: min(68svh, 540px); }
   }
 </style>
 
