@@ -51,6 +51,7 @@ export type Pagina = {
   position?: string;               // object-position da imagem
   copyAt?: 'top';                  // texto no alto quando o assunto da imagem está embaixo
   cta?: { label: string; href: string };
+  video?: { src: string; poster: string; title: string };  // vídeo vertical (9:16) em public/video
 };
 
 export const capa = {
@@ -273,6 +274,7 @@ export const setores: Setor[] = [
         lead: 'Nos dois dias de SCA Country, ao lado de José Silva, fundador do SCA.',
         image: 'setor-05-dj',
         imageAlt: 'Palco de DJ com o logo SCA, público dançando e supercarros nas laterais',
+        video: { src: '/video/jesus-luz.mp4', poster: '/video/jesus-luz-poster.jpg', title: 'Vídeo do DJ Jesus Luz' },
       },
     ],
   },

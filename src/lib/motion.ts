@@ -258,17 +258,38 @@ function initAudio() {
       toggle.setAttribute('aria-pressed', 'false');
     });
   };
-  const stop = () => {
+  // remember = false when stepping aside for other media: not a "sound off" preference
+  const stop = (remember = true) => {
     wantPlaying = false;
     if (fadeId) { cancelAnimationFrame(fadeId); fadeId = 0; }
     fade(0, () => { if (!wantPlaying) audio.pause(); });
     toggle.classList.remove('is-playing');
     toggle.setAttribute('aria-pressed', 'false');
-    try { localStorage.setItem(KEY, 'off'); } catch { /* ignore */ }
+    if (remember) { try { localStorage.setItem(KEY, 'off'); } catch { /* ignore */ } }
   };
 
+  // In-page media with sound (the media kit's DJ reel) borrows the speakers: the ambient
+  // track steps aside while it is audible and comes back afterwards.
+  let mediaOn = false;
+  let lentOut = false;
+  window.addEventListener('sca:media-sound', (e) => {
+    const on = (e as CustomEvent<{ on: boolean }>).detail?.on === true;
+    if (on === mediaOn) return;
+    mediaOn = on;
+    if (on) {
+      lentOut = wantPlaying;
+      if (wantPlaying) stop(false);
+    } else if (lentOut) {
+      lentOut = false;
+      if (!wantPlaying) play();
+    }
+  });
+
   toggle.addEventListener('click', () => {
-    if (toggle.classList.contains('is-playing')) stop(); else play();
+    if (toggle.classList.contains('is-playing')) { stop(); return; }
+    play();
+    // pressed while the reel has the sound: the visitor wants the ambient back, mute the reel
+    if (mediaOn) window.dispatchEvent(new Event('sca:ambient-on'));
   });
 
   // Play straight away. Browsers usually block sound before the first gesture,
@@ -286,9 +307,10 @@ function initAudio() {
     };
     const onGesture = (e: Event) => {
       // A first tap on the toggle itself must behave as a plain toggle press,
-      // not "auto-start then immediately stop".
+      // not "auto-start then immediately stop". Same for a reel's own sound button:
+      // the visitor chose that sound, so the ambient track doesn't start under it.
       const t = e.target as Element | null;
-      if (t && typeof t.closest === 'function' && t.closest('[data-audio-toggle]')) { disarm(); return; }
+      if (t && typeof t.closest === 'function' && t.closest('[data-audio-toggle], [data-mk-sound]')) { disarm(); return; }
       play();
       disarm();
     };
