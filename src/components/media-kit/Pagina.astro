@@ -21,6 +21,8 @@ const mobileSet = imgMobile
   ? await getImage({ src: imgMobile, widths: widthsFor(imgMobile, [480, 768]), format: 'webp' })
   : undefined;
 const pad = (x: number) => String(x).padStart(2, '0');
+// one very long word ("ESTACIONAMENTO") needs a smaller title on phones or it gets clipped
+const longWord = Math.max(...page.title.split(/\s+/).map((w) => w.length)) >= 12;
 ---
 <section
   class:list={['pg', `pg--${variant}`, img ? 'pg--art' : variant !== 'plain' && 'pg--type', page.copyAt === 'top' && 'pg--top']}
@@ -58,7 +60,7 @@ const pad = (x: number) => String(x).padStart(2, '0');
     <div class="pg__copy">
       {page.badge && <p class="pg__badge" data-reveal="fade">{page.badge}</p>}
       {page.mega && <p class:list={['pg__mega', page.mega.length > 6 && 'pg__mega--long']} data-reveal>{page.mega}</p>}
-      <h2 class="pg__title" data-reveal data-split>{page.title}</h2>
+      <h2 class:list={['pg__title', longWord && 'pg__title--long']} data-reveal data-split>{page.title}</h2>
       {page.accent && <p class="pg__accent" data-reveal style="--reveal-delay:100ms">{page.accent}</p>}
       {page.lead && <p class="pg__lead" data-reveal style="--reveal-delay:160ms">{page.lead}</p>}
       {page.chips && (
@@ -197,6 +199,7 @@ const pad = (x: number) => String(x).padStart(2, '0');
     .pg__label { font-size: 0.68rem; letter-spacing: 0.18em; }
     .pg__count { font-size: 0.82rem; }
     .pg__title { font-size: clamp(2.3rem, 11vw, 3.6rem); max-width: none; }
+    .pg__title--long { font-size: clamp(1.6rem, 8.4vw, 3.6rem); }
     .pg__mega { font-size: clamp(4.6rem, 27vw, 8rem); }
     .pg__mega.pg__mega--long { font-size: clamp(2.6rem, 11.5vw, 4rem); }
     .pg--art .pg__scrim {
