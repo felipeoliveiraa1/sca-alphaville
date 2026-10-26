@@ -17,12 +17,16 @@ export const brand = {
   address: 'Alameda Mamoré, 503, conj. 191 / 194 · Alphaville Empresarial · Barueri · SP',
 } as const;
 
+/** Onde o SCA está presente: o Brasil e mais 7 países */
+const countries = ['Brasil', 'USA', 'Paraguai', 'Itália', 'Portugal', 'Suíça', 'Dubai', 'Japão'] as const;
+
 export const contact = {
   whatsapp: '+55 11 99463-3003',
   whatsappDigits: '5511994633003',
   phoneDisplay: '(11) 99463-3003',
   email: 'contato@supercarrosalphaville.com.br',
-  locations: 'Brasil · EUA · Europa',
+  countries,
+  locations: countries.join(' · '),
 } as const;
 
 export const social = {
@@ -47,7 +51,7 @@ export const hero = {
     'Onde a paixão por super carros encontra o networking de alto nível. Não é apenas um clube. É um universo de possibilidades, exclusividade e conexões que movem negócios.',
   ctaPrimary: { label: 'Seja Membro', href: '#membro' },
   ctaSecondary: { label: 'Conheça o Ecossistema', href: '#ecossistema' },
-  marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '148 Edições', '+3.000 Membros'],
+  marquee: ['Alphaville', '+12 Estados', '7 Países', '148 Edições', '+3.000 Membros'],
 } as const;
 
 /** Faixa de credenciais logo abaixo do hero ("+" na frente; 148 é o número exato de edições) */
@@ -99,7 +103,7 @@ export const reach = {
   lead: 'Conectando marcas e pessoas em uma escala sem precedentes.',
   stats: [
     { value: 3000, prefix: '+', label: 'Membros ativos', note: 'Empresários, investidores e colecionadores' },
-    { value: 12, prefix: '+', label: 'Estados no Brasil', note: 'Presença também nos EUA e Europa' },
+    { value: 12, prefix: '+', label: 'Estados no Brasil', note: 'E em mais 7 países' },
     { value: 148, label: 'Edições realizadas', note: 'Encontros, viagens e experiências' },
     { value: 30, prefix: '+', label: 'Marcas parceiras', note: 'Ecossistema de luxo e performance' },
   ],

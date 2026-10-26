@@ -33,7 +33,9 @@ import { reach, contact } from '../data/site';
 
     <div class="reach__foot" data-reveal>
       <span class="reach__foot-label"><span class="facet" aria-hidden="true"></span>Presença em</span>
-      <span class="reach__foot-places gold-text">{contact.locations}</span>
+      <span class="reach__foot-places">
+        {contact.countries.map((c) => <span class="reach__country gold-text">{c}</span>)}
+      </span>
     </div>
   </div>
 </section>
@@ -91,9 +93,18 @@ import { reach, contact } from '../data/site';
     font-size: 0.82rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text);
   }
   .reach__foot-label .facet { color: var(--gold); }
+  /* one country per unit, so a line never breaks inside a name. The dot hangs in the gap
+     before each name; at the start of a line it falls outside the box and is clipped. */
   .reach__foot-places {
-    font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; line-height: 1.05;
-    font-size: clamp(1.8rem, 1rem + 3vw, 3.6rem);
+    display: flex; flex-wrap: wrap; column-gap: 0.9em; row-gap: 0.15em;
+    overflow: hidden; padding-block: 0.1em;
+    font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; line-height: 1.1;
+    font-size: clamp(1.5rem, 0.9rem + 2.2vw, 3rem);
+  }
+  .reach__country { position: relative; }
+  .reach__country::before {
+    content: '·'; position: absolute; left: -0.62em;
+    color: var(--gold); -webkit-text-fill-color: var(--gold);
   }
 
   @media (max-width: 1180px) {
