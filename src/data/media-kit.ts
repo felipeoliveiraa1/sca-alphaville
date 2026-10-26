@@ -8,7 +8,6 @@
  * Sem o arquivo, usa `fallback` (foto real do site) ou vira uma página tipográfica.
  *
  * STANDS: uma opção só ("Reservar meu stand"), sem tamanhos nem categorias.
- * ⚠ CONFIRMAR: mês do evento.
  */
 import { contact } from './site';
 
@@ -20,7 +19,7 @@ export const event = {
   name: 'SCA Country',
   edition: '148ª edição',
   place: 'Fazenda em Tatuí · SP',
-  date: 'Dias 21 e 22',  // CONFIRMAR o mês (21–22/nov/2026 cai num sábado e domingo)
+  date: 'Dias 21 e 22 de novembro',  // sábado e domingo
   hours: 'A partir das 9h · sem hora para terminar',
 } as const;
 
@@ -57,7 +56,7 @@ export const capa = {
   eyebrow: 'Media Kit · Expositores',
   titleLines: ['SCA Country', event.edition],
   image: 'capa',
-  imageAlt: 'Vista do SCA Country ao pôr do sol: pista, supercarros alinhados na grama, tendas e helicópteros do SCA',
+  imageAlt: 'Vista do SCA Country ao pôr do sol: pista, super carros alinhados na grama, tendas e helicópteros do SCA',
   ctaSecondary: { label: 'Ver a programação', href: '#programacao' },
 } as const;
 
@@ -70,7 +69,7 @@ export const ecossistema = {
     lead: 'São mais de 3 mil empresários proprietários de carros superesportivos. Um ecossistema com os maiores empresários do país.',
     image: 'ecossistema',
     fallback: 'dream-car-event',
-    imageAlt: 'Membros do SCA circulando entre supercarros em um encontro do clube',
+    imageAlt: 'Vista do alto de um encontro do SCA, com dezenas de super carros e membros reunidos',
   } satisfies Pagina,
   stats: [
     { value: 12, label: 'Estados no Brasil' },
@@ -86,7 +85,7 @@ export const vip: Pagina = {
   title: 'Arena SCA Member',
   lead: 'Uma arena exclusiva para os membros do SCA. Os maiores empresários do país estarão lá dentro, com presenças já confirmadas.',
   image: 'arena-vip',
-  imageAlt: 'Lounge VIP elevado com letreiro "VIP · Arena SCA Member" e supercarros estacionados em frente',
+  imageAlt: 'Lounge VIP elevado com letreiro "VIP · Arena SCA Member" e super carros estacionados em frente',
 };
 
 export const programacao = {
@@ -108,16 +107,16 @@ export const setores: Setor[] = [
   {
     n: 1,
     name: 'Track Day',
-    summary: 'Supercarros de todas as marcas na pista.',
+    summary: 'Super carros de todas as marcas na pista.',
     pages: [
       {
         id: 'setor-01',
         label: 'Setor 01 · Programação',
         title: 'Track Day',
-        lead: 'Supercarros de todas as marcas acelerando na pista do SCA Country.',
+        lead: 'Super carros de todas as marcas acelerando na pista do SCA Country.',
         chips: ['Porsche', 'Ferrari', 'Lamborghini', 'BMW M', 'Audi R8 & RS', 'Mustang'],
         image: 'setor-01-track-day',
-        imageAlt: 'Fileiras de supercarros de várias marcas ao lado da pista, com faixas SCA nas grades e público',
+        imageAlt: 'Fileiras de super carros de várias marcas ao lado da pista, com faixas SCA nas grades e público',
         fallback: 'fleet-formation-saoroque',
       },
       {
@@ -144,7 +143,7 @@ export const setores: Setor[] = [
         title: 'Stands de empresas',
         lead: 'Uma feira dentro do evento, com mais de 100 empresas expondo. Seja uma empresa parceira e monte o seu stand.',
         image: 'setor-02-stands',
-        imageAlt: 'Fileira de tendas pretas de expositores com supercarros estacionados em frente',
+        imageAlt: 'Fileira de tendas pretas de expositores com super carros estacionados em frente',
         cta: { label: reserveCta.label, href: reserveCta.href },
       },
       {
@@ -167,7 +166,7 @@ export const setores: Setor[] = [
         label: 'Setor 03 · Gastronomia',
         title: 'Praça de alimentação',
         accent: 'Costela fogo de chão.',
-        lead: 'Food trucks, sorvetes e o melhor da comida de fazenda, com os supercarros em volta.',
+        lead: 'Food trucks, sorvetes e o melhor da comida de fazenda, com os super carros em volta.',
         image: 'setor-03-gastronomia',
         imageAlt: 'Costela fogo de chão, food trucks e mesas rústicas ao pôr do sol',
       },
@@ -200,7 +199,7 @@ export const setores: Setor[] = [
         title: 'DJ Jesus Luz',
         lead: 'Nos dois dias de SCA Country, ao lado de José Silva, fundador do SCA.',
         image: 'setor-05-dj',
-        imageAlt: 'Palco de DJ com o logo SCA, público dançando e supercarros nas laterais',
+        imageAlt: 'Palco de DJ com o logo SCA, público dançando e super carros nas laterais',
         video: { src: '/video/jesus-luz.mp4', poster: '/video/jesus-luz-poster.jpg', title: 'Vídeo do DJ Jesus Luz' },
       },
     ],
@@ -292,7 +291,7 @@ export const setores: Setor[] = [
       {
         id: 'setor-11',
         label: 'Setor 11 · Estrutura',
-        mega: '5 mil',
+        mega: 'SCA',
         title: 'Estacionamento',
         lead: 'Estacionamento para 5 mil carros, pensado para receber os visitantes.',
         image: 'setor-11-estacionamento',

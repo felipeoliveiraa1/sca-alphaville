@@ -14,7 +14,7 @@ export const brand = {
   tagline: 'Experiência Além da Velocidade',
   positioning: 'O maior ecossistema de empresários do mundo',
   city: 'Alphaville · Barueri, SP',
-  address: 'Al. Mamoré, 503, Conj. 194, Barueri / SP',
+  address: 'Alameda Mamoré, 503, conj. 191 / 194 · Alphaville Empresarial · Barueri · SP',
 } as const;
 
 export const contact = {
@@ -44,7 +44,7 @@ export const hero = {
   eyebrow: 'Clube Privado · Membros desde 2019',
   titleLines: ['Experiência', 'Além da', 'Velocidade'],
   lead:
-    'Onde a paixão por supercarros encontra o networking de alto nível. Não é apenas um clube. É um universo de possibilidades, exclusividade e conexões que movem negócios.',
+    'Onde a paixão por super carros encontra o networking de alto nível. Não é apenas um clube. É um universo de possibilidades, exclusividade e conexões que movem negócios.',
   ctaPrimary: { label: 'Seja Membro', href: '#membro' },
   ctaSecondary: { label: 'Conheça o Ecossistema', href: '#ecossistema' },
   marquee: ['Alphaville', '+12 Estados', 'EUA', 'Europa', '148 Edições', '+3.000 Membros'],
@@ -66,7 +66,7 @@ export const essence = {
       index: '01',
       title: 'Paixão Compartilhada',
       body:
-        'O elo que une nossos membros é o fascínio por supercarros e tudo o que eles representam, conquista, presença e excelência.',
+        'O elo que une nossos membros é o fascínio por super carros e tudo o que eles representam, conquista, presença e excelência.',
     },
     {
       index: '02',
@@ -172,7 +172,7 @@ export const membership = {
   tiers: [
     {
       name: 'Membro',
-      for: 'Para apaixonados por supercarros e networking de alto nível.',
+      for: 'Para apaixonados por super carros e networking de alto nível.',
       points: ['Acesso aos encontros e edições', 'Rede de empresários e investidores', 'Experiências e viagens exclusivas'],
       cta: 'Seja Membro',
     },
